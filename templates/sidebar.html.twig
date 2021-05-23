@@ -1,0 +1,43 @@
+<!-- sidebar menu -->
+<div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+    <div class="menu_section">
+        <h3>General</h3>
+        <ul class="nav side-menu">
+           
+              <li><a href="{{ path('dataset') }}">Datasets</a></li>
+            </li>
+           
+
+            <li><a href="{{ path('dashboard') }}">Dashboard</a></li>
+            </li>
+            <li><a href="{{ path('contact') }}">Contact</a></li>
+            </li>
+
+            {% if is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('utilisateurs') }}">Utilisateurs</a></li>
+                </li>
+
+            {% endif %}
+        </ul>
+    </div>
+
+</div>
+<!-- /sidebar menu -->
+
+
+<!-- /menu footer buttons -->
+<div class="sidebar-footer hidden-small">
+    <a  data-placement="top" >
+        
+    </a>
+    <a data-toggle="tooltip" data-placement="top" >
+      
+    </a>
+    <a data-toggle="tooltip" data-placement="top" >
+        
+    </a>
+    <a data-toggle="tooltip" data-placement="top" title="Logout" href="{{ path('app_logout') }}">
+        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+    </a>
+</div>
+<!-- /menu footer buttons -->

@@ -1,0 +1,125 @@
+<script>
+    $( document ).ready(function() {
+        document.getElementById("colsTab1").style.visibility = "hidden";
+        document.getElementById("colsTab2").style.visibility = "hidden";
+        document.getElementById("nameTab1").style.visibility = "hidden";
+        document.getElementById("nameTab2").style.visibility = "hidden";
+        document.getElementById("col1JoinLabel").style.visibility = "hidden";
+        document.getElementById("col2JoinLabel").style.visibility = "hidden";
+
+        document.getElementById("btnClear").style.visibility = "hidden";
+
+        document.getElementById('alertTables').innerHTML = '';
+        document.getElementById('alertTables').className  = ('')
+
+    });
+
+    var checkedTabs = []
+    var nbChecked = 0;
+
+    $('#myTable').on('click', '.clickable-row', function(event) {
+        //alert( $(this).text())
+
+        var data = $(this).text().replace(/ /g,'').trimLeft().trimRight();
+
+        var tableName = data.substr(0,data.substring(0).search(/[^A-Za-z]/))
+
+       // alert(tableName);
+
+        nbChecked = nbChecked + 1 ;
+        if (nbChecked == 1 ){
+
+            checkedTabs.push(tableName);
+            addTable1(tableName);
+        } else if (nbChecked == 2 ){
+            checkedTabs.push(tableName);
+            addTable2(tableName);
+        } else {
+            if (checkedTabs.indexOf(tableName) !== -1){
+                document.getElementById('alertTables').innerHTML = 'Deja selectionner';
+                document.getElementById('alertTables').className  = ('label warning')
+            } else {
+                document.getElementById('alertTables').innerHTML = 'Deux tables au maximum';
+                document.getElementById('alertTables').className  = ('label danger')
+                document.getElementById("btnClear").style.visibility = "visible";
+
+            }
+;
+        }
+    });
+
+    $("#btnClear").click( function()
+    {
+        document.getElementById("colsTab1").style.visibility = "hidden";
+        document.getElementById("colsTab2").style.visibility = "hidden";
+        document.getElementById("nameTab1").style.visibility = "hidden";
+        document.getElementById("nameTab2").style.visibility = "hidden";
+
+        document.getElementById("btnClear").style.visibility = "hidden";
+
+        document.getElementById('alertTables').innerHTML = '';
+        document.getElementById('alertTables').className  = ('')
+
+        checkedTabs=[];
+        nbChecked = 0;
+    }
+    )
+
+    function addTable1($tab) {
+        document.getElementById('nameTab1').innerHTML = $tab;
+        document.getElementById('nameTab1').className  = ('col-md-3 col-sm-3 label info');
+        document.getElementById("nameTab1").style.visibility = "visible";
+        showColsTab1($tab)
+    }
+
+    function addTable2($tab) {
+        document.getElementById('nameTab2').innerHTML = $tab;
+        document.getElementById('nameTab2').className  = ('col-md-3 col-sm-3 label info');
+        document.getElementById("nameTab2").style.visibility = "visible";
+        showColsTab2($tab)
+    }
+
+    function showColsTab1(val) {
+
+        document.getElementById("colsTab1").style.visibility = "visible";
+        var base_url = window.location.origin;
+        var urlAPI = base_url+"/dashboard/getColumns?tab=" + val
+        $.getJSON( urlAPI, function( data ) {
+            var container = $('#colsTab1');
+            $("#colsTab1").html("");
+            var inputs = container.find('input');
+            for (var i = 0; i < data.length; i++) {
+
+                lib = "    " + data[i]["COLUMN_NAME"];
+                $('<input />', { type: 'checkbox', id: data[i]["COLUMN_NAME"], value: data[i]["COLUMN_NAME"] , class:"flat" , onclick:'checkboxChange(this);' }).appendTo(container);
+
+                $('<label />', { 'for': data[i]["COLUMN_NAME"], text:data[i]["COLUMN_NAME"] , style:'padding-left:20px'}).appendTo(container);
+                $('<br>').appendTo(container);
+
+            }
+            // $("#col1List").html(select);
+        });
+    }
+    function showColsTab2(val) {
+
+        document.getElementById("colsTab2").style.visibility = "visible";
+        var base_url = window.location.origin;
+        var urlAPI = base_url+"/dashboard/getColumns?tab=" + val
+        $.getJSON( urlAPI, function( data ) {
+            var container = $('#colsTab2');
+            $("#colsTab2").html("");
+            var inputs = container.find('input');
+            for (var i = 0; i < data.length; i++) {
+
+                lib = "    " + data[i]["COLUMN_NAME"];
+                $('<input />', { type: 'checkbox', id: data[i]["COLUMN_NAME"], value: data[i]["COLUMN_NAME"] , class:"flat" , onclick:'checkboxChange(this);' }).appendTo(container);
+
+                $('<label />', { 'for': data[i]["COLUMN_NAME"], text:data[i]["COLUMN_NAME"] , style:'padding-left:20px'}).appendTo(container);
+                $('<br>').appendTo(container);
+
+            }
+            // $("#col1List").html(select);
+        });
+    }
+
+</script>

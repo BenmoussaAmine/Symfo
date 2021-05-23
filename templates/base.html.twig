@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{{ asset("images/favicon.ico" ) }}" type="image/ico" />
+
+    <title>Reporting| </title>
+
+    {% include 'css.html.twig' %}
+
+    {% block css %} {% endblock %}
+
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Reporting</span></a>
+                </div>
+
+
+                <div class="clearfix"></div>
+
+                <!-- menu profile quick info -->
+                
+
+                <br />
+
+                {% include 'sidebar.html.twig' %}
+
+                {% block sidebar %} {% endblock %}
+
+
+            </div>
+        </div>
+        {% include 'topnav.html.twig' %}
+
+        {% block body %} {% endblock %}
+
+        <!-- footer content -->
+        <footer>
+            <div class="pull-right">
+                Module de reporing 2021
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+{% include 'js.html.twig' %}
+
+{% block js %} {% endblock %}
+
+</body>
+</html>

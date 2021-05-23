@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+{% block css %}
+    <!-- Datatables -->
+
+    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+
+
+    <link href="../dist/jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../dist/jquery.vmap.js"></script>
+    <script type="text/javascript" src="../dist/maps/jquery.vmap.tunisia.js" charset="utf-8"></script>
+
+
+
+
+{% endblock %}
+{% block body %}
+
+
+    <!-- page content -->
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="page-title">
+                <div class="title_left">
+                    <h3>Plain Page</h3>
+                </div>
+
+                <div class="title_right">
+                    <div class="col-md-5 col-sm-5   form-group pull-right top_search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for...">
+                            <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12  ">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Plain Page</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="#">Settings 1</a>
+                                        <a class="dropdown-item" href="#">Settings 2</a>
+                                    </div>
+                                </li>
+                                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <!--- baaaaarrrr ------------------------------------------------------ -->
+
+
+
+                            <!--- end / baaaaarrrr ------------------------------------------------------ -->
+                            <h1>Ajouter table à dataset</h1>
+
+                            <div class="form-group row">
+
+                                <div id="datasetList" class="col-md-3 col-sm-3 ">
+
+
+                                    <select  class="form-control"  >
+                                        <option>Datasets</option>
+                                    </select>
+
+                                </div>
+                                <div id="tabList" class="col-md-3 col-sm-3 ">
+                                    <select  class="form-control"  >
+                                        <option>Tables</option>
+                                    </select>
+                                </div>
+
+
+
+
+                                    <button type="submit" class="btn btn-success" id ="btnAdd">Ajouter</button>
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+    </div>
+    <!-- /page content -->
+
+
+{% endblock %}
+{% block js %}
+    <script>
+
+        $(document).ready(function(){
+            showDatasetList();
+            showTabList();
+        })
+
+
+        function showDatasetList() {
+            var base_url = window.location.origin;
+            var urlAPI = base_url+"/api/dataset/listDatasets"
+            $.getJSON( urlAPI, function( data ) {
+
+                //    alert(data);
+                var select = $("<select class=\"form-control\"></select>").attr("id", "datasets").attr("onchange", "selectedTables(this.value)");
+                select.append($("<option></option>").attr("value", "").text("Datasets"));
+                var data_length = data.length;
+                for (var i = 0; i < data_length; i++) {
+                    select.append($("<option></option>").attr("value", data[i]["nom"]).text(data[i]["nom"]));
+                }
+                $("#datasetList").html(select);
+
+            });
+        }
+
+
+        $("#btnAdd").click( function()
+            {
+
+
+                var val1 = $('#datasetList').find(":selected").text()
+                var val2 = $('#tabList').find(":selected").text()
+                if (val1 == "Datasets" || val2 =="Tables" ){
+                    alert("Veuillez selectionner dataset et table")
+                } else {
+                    var base_url = window.location.origin;
+                    var urlAPI = base_url+"/api/dataset/add?dataset="+val1+"&table="+val2
+                    alert(urlAPI)
+                    $.getJSON( urlAPI, function( data ) {
+                        if (data[1]["resultat"] == "ok "){
+                            alert("ok")
+                        }
+
+                    });
+                    document.location.href = String( document.location.href ).replace( "#/", "" );
+                }
+            }
+        );
+    </script>
+{% endblock %}

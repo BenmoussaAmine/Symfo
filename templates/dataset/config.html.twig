@@ -1,0 +1,564 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+{% block css %}
+    <style>
+        .label {
+            color: white;
+            padding: 8px;
+            font-family: Arial;
+        }
+        .success {background-color: #04AA6D;} /* Green */
+        .info {background-color: #2196F3;} /* Blue */
+        .warning {background-color: #ff9800;} /* Orange */
+        .danger {background-color: #f44336;} /* Red */
+        .other {background-color: #e7e7e7; color: black;} /* Gray */
+    </style>
+    <!-- Datatables -->
+
+    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+
+
+    <link href="../dist/jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../dist/jquery.vmap.js"></script>
+    <script type="text/javascript" src="../dist/maps/jquery.vmap.tunisia.js" charset="utf-8"></script>
+
+
+
+
+{% endblock %}
+{% block body %}
+
+
+    <!-- page content -->
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="page-title">
+                <div class="title_left">
+                    <h3>Plain Page</h3>
+                </div>
+
+                <div class="title_right">
+                    <div class="col-md-5 col-sm-5   form-group pull-right top_search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for...">
+                            <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12  ">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Table design <small>Custom design</small></h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="#">Settings 1</a>
+                                        <a class="dropdown-item" href="#">Settings 2</a>
+                                    </div>
+                                </li>
+                                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="x_content">
+
+                            <p>Add class <code>bulk_action</code> to table for bulk actions options on row select</p>
+
+                            <div class="table-responsive">
+                                <table class="table table-striped jambo_table bulk_action " id="myTable">
+                                    <thead>
+                                    <tr class="headings">
+
+                                        <th class="column-title">Table  </th>
+                                        <th class="column-title">Colonnes </th>
+                                        </th>
+                                        <th class="bulk-actions" colspan="7">
+                                            <a class="antoo" style="color:#fff; font-weight:500;">( <span class="action-cnt"> </span> ) </a>
+                                        </th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    {% for tab in tabs %}
+                                        <tr class="even pointer clickable-row">
+
+                                            <td class=" ">{{ tab.Tab }}</td>
+                                            <td class=" ">
+                                                {{ tab.cols |join(',   ') }}
+                                            </td>
+
+                                        </tr>
+                                    {% endfor %}
+
+
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                            <!--------------------- row table names --------------->
+                            <div class="form-group row">
+                                <div   class="col-md-2 col-sm-2 ">
+
+
+                                    <label id="alertTables" ></label>
+
+                                </div>
+                                <div  id="nameTab1" class="col-md-3 col-sm-3 ">
+
+                                    nom tab 1
+
+                                </div>
+                                <div   class="col-md-2 col-sm-2 ">
+
+
+
+                                </div>
+                                <div  id="nameTab2" class="col-md-3 col-sm-3 ">
+
+                                        nom tab 2
+
+                                </div>
+                                <div   class="col-md-2 col-sm-2 ">
+
+
+
+                                </div>
+                            </div>
+                            <!--------------------- row table cols --------------->
+                            <div class="form-group row">
+                                <div   class="col-md-2 col-sm-2 ">
+
+                                    <button type="submit" class="btn btn-round btn-success" id ="btnClear">Clear</button>
+
+
+
+                                </div>
+                                <div  id="colsTab1" class="col-md-3 col-sm-3 ">
+
+
+
+                                </div>
+                                <div   class="col-md-2 col-sm-2 ">
+
+
+
+                                </div>
+
+                                <div  id="colsTab2" class="col-md-3 col-sm-3 ">
+
+
+
+                                </div>
+                                <div   class="col-md-2 col-sm-2 ">
+
+
+
+                                </div>
+                            </div>
+                            <!--------------------- row join coll --------------->
+                            <div class="form-group row">
+                                <div   class="col-md-2 col-sm-2 ">
+
+
+
+                                </div>
+                                <div  id="col1JoinLabel" class="col-md-3 col-sm-3 ">
+
+
+
+                                </div>
+                                <div   class="col-md-2 col-sm-2 ">
+
+
+
+                                </div>
+
+                                <div  id="col2JoinLabel" class="col-md-3 col-sm-3 ">
+
+
+
+                                </div>
+                                <div   class="col-md-2 col-sm-2 ">
+
+
+
+                                </div>
+                            </div>
+                            <!--------------------- row cols list --------------->
+                            <div class="form-group row">
+                                <div   class="col-md-2 col-sm-2 ">
+
+
+
+                                </div>
+                                <div  id="col1List" class="col-md-3 col-sm-3 ">
+
+
+
+                                </div>
+                                <div   class="col-md-2 col-sm-2 ">
+
+                                    <label id="alertMerge" ></label>
+
+                                </div>
+
+                                <div  id="col2List" class="col-md-3 col-sm-3 ">
+
+
+
+                                </div>
+                                <div   class="col-md-2 col-sm-2 ">
+
+
+
+                                </div>
+                            </div>
+                            <!--------------------- row merge button --------------->
+                            <div class="form-group row">
+                                <div   class="col-md-2 col-sm-2 ">
+
+
+
+                                </div>
+                                <div   class="col-md-3 col-sm-3 ">
+
+
+
+                                </div>
+                                <div   class="col-md-2 col-sm-2 text-center ">
+
+                                    <button type="submit" class="btn btn-round btn-success" id ="btnMerge">Merge</button>
+
+
+                                </div>
+
+                                <div   class="col-md-3 col-sm-3 ">
+
+
+
+                                </div>
+                                <div   class="col-md-2 col-sm-2 ">
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+            </div>
+
+
+        </div>
+    </div>
+    <!-- /page content -->
+
+
+{% endblock %}
+{% block js %}
+
+<script>
+    var checkedTabs = []
+    var nbChecked = 0;
+    var tab1Cols=[];
+    var tab2Cols=[];
+    var tab1JoinCol = []
+    var tab2JoinCol = []
+
+
+    $( document ).ready(function() {
+        document.getElementById("colsTab1").style.visibility = "hidden";
+        document.getElementById("colsTab2").style.visibility = "hidden";
+        document.getElementById("nameTab1").style.visibility = "hidden";
+        document.getElementById("nameTab2").style.visibility = "hidden";
+        document.getElementById("col1JoinLabel").style.visibility = "hidden";
+        document.getElementById("col2JoinLabel").style.visibility = "hidden";
+
+        document.getElementById("btnClear").style.visibility = "hidden";
+        document.getElementById("btnMerge").style.visibility = "hidden";
+
+        document.getElementById('alertTables').innerHTML = '';
+        document.getElementById('alertTables').className  = ('')
+
+    });
+
+
+    $('#myTable').on('click', '.clickable-row', function(event) {
+        //alert( $(this).text())
+
+        var data = $(this).text().replace(/ /g,'').trimLeft().trimRight();
+
+        var tableName = data.substr(0,data.substring(0).search(/[^A-Za-z]/))
+
+       // alert(tableName);
+
+        nbChecked = nbChecked + 1 ;
+        if (nbChecked == 1 ){
+
+            checkedTabs.push(tableName);
+            addTable1(tableName);
+        } else if (nbChecked == 2 ){
+            checkedTabs.push(tableName);
+            addTable2(tableName);
+            document.getElementById("btnMerge").style.visibility = "visible";
+        } else {
+            if (checkedTabs.indexOf(tableName) !== -1){
+                document.getElementById('alertTables').innerHTML = 'Deja selectionner';
+                document.getElementById('alertTables').className  = ('label warning')
+            } else {
+                document.getElementById('alertTables').innerHTML = 'Deux tables au maximum';
+                document.getElementById('alertTables').className  = ('label danger')
+                document.getElementById("btnClear").style.visibility = "visible";
+
+            }
+;
+        }
+    });
+
+
+    $("#btnClear").click( function()
+
+    {
+        document.getElementById("colsTab1").style.visibility = "hidden";
+        document.getElementById("colsTab2").style.visibility = "hidden";
+        document.getElementById("nameTab1").style.visibility = "hidden";
+        document.getElementById("nameTab2").style.visibility = "hidden";
+
+        document.getElementById("col1JoinLabel").style.visibility = "hidden";
+        document.getElementById("col2JoinLabel").style.visibility = "hidden";
+
+        document.getElementById("btnClear").style.visibility = "hidden";
+        document.getElementById("btnMerge").style.visibility = "hidden";
+
+        document.getElementById('col1List').innerHTML = '';
+        document.getElementById('col2List').innerHTML = '';
+
+        document.getElementById('alertTables').innerHTML = '';
+        document.getElementById('alertTables').className  = ('')
+
+        document.getElementById('alertMerge').innerHTML = '';
+        document.getElementById('alertMerge').className  = ('')
+
+         checkedTabs = []
+         nbChecked = 0;
+         tab1Cols=[];
+         tab2Cols=[];
+         tab1JoinCol = []
+         tab2JoinCol = []
+    }
+    )
+
+    function addTable1($tab) {
+        document.getElementById('nameTab1').innerHTML = $tab;
+        document.getElementById('nameTab1').className  = ('col-md-3 col-sm-3 label info');
+        document.getElementById("nameTab1").style.visibility = "visible";
+
+        document.getElementById('col1JoinLabel').innerHTML = "Colonne de jointure";
+        document.getElementById('col1JoinLabel').className  = ('col-md-3 col-sm-3 label info');
+        document.getElementById("col1JoinLabel").style.visibility = "visible";
+        showColsTab1($tab)
+        showColsList1($tab)
+    }
+
+    function addTable2($tab) {
+        document.getElementById('nameTab2').innerHTML = $tab;
+        document.getElementById('nameTab2').className  = ('col-md-3 col-sm-3 label info');
+        document.getElementById("nameTab2").style.visibility = "visible";
+
+        document.getElementById('col2JoinLabel').innerHTML = "Colonne de jointure";
+        document.getElementById('col2JoinLabel').className  = ('col-md-3 col-sm-3 label info');
+        document.getElementById("col2JoinLabel").style.visibility = "visible";
+
+        showColsTab2($tab)
+        showColsList2($tab)
+    }
+
+    function showColsTab1(val) {
+
+        document.getElementById("colsTab1").style.visibility = "visible";
+        var base_url = window.location.origin;
+        var urlAPI = base_url+"/dashboard/getColumns?tab=" + val
+        $.getJSON( urlAPI, function( data ) {
+            var container = $('#colsTab1');
+            $("#colsTab1").html("");
+            var inputs = container.find('input');
+            for (var i = 0; i < data.length; i++) {
+
+                lib = "    " + data[i]["COLUMN_NAME"];
+                $('<input />', { type: 'checkbox', id: data[i]["COLUMN_NAME"], value: data[i]["COLUMN_NAME"] , class:"flat" , onclick:'checkboxChange1(this);' }).appendTo(container);
+
+                $('<label />', { 'for': data[i]["COLUMN_NAME"], text:data[i]["COLUMN_NAME"] , style:'padding-left:20px'}).appendTo(container);
+                $('<br>').appendTo(container);
+
+            }
+            // $("#col1List").html(select);
+        });
+    }
+    function showColsList1(val) {
+        var base_url = window.location.origin;
+        var urlAPI = base_url+"/dashboard/getColumns?tab=" + val
+        $.getJSON( urlAPI, function( data ) {
+            /*   var select = $("<select class=\"form-control\"></select>").attr("id", "tables").attr("onchange", "selectedCol1(this.value)");
+               select.append($("<option></option>").attr("value", "").text("Colonne 1"));
+               var data_length = data.length; */
+
+            var container = $('#col1List');
+            $("#col1List").html("");
+            var inputs = container.find('input');
+            var select = $("<select class=\"form-control\"></select>").attr("id", "cols").attr("onchange", "joinCol1(this.value)");
+            select.append($("<option></option>").attr("value", "").text("Selectionner colonne"))
+            for (var i = 0; i < data.length; i++) {
+
+                select.append($("<option></option>").attr("value", data[i]["COLUMN_NAME"]).text(data[i]["COLUMN_NAME"]))
+
+            }
+             $("#col1List").html(select);
+        });
+    }
+    function showColsTab2(val) {
+
+        document.getElementById("colsTab2").style.visibility = "visible";
+        var base_url = window.location.origin;
+        var urlAPI = base_url+"/dashboard/getColumns?tab=" + val
+        $.getJSON( urlAPI, function( data ) {
+            var container = $('#colsTab2');
+            $("#colsTab2").html("");
+            var inputs = container.find('input');
+            for (var i = 0; i < data.length; i++) {
+
+                lib = "    " + data[i]["COLUMN_NAME"];
+                $('<input />', { type: 'checkbox', id: data[i]["COLUMN_NAME"], value: data[i]["COLUMN_NAME"] , class:"flat" , onclick:'checkboxChange2(this);' }).appendTo(container);
+
+                $('<label />', { 'for': data[i]["COLUMN_NAME"], text:data[i]["COLUMN_NAME"] , style:'padding-left:20px'}).appendTo(container);
+                $('<br>').appendTo(container);
+
+            }
+            // $("#col1List").html(select);
+        });
+    }
+    function showColsList2(val) {
+        var base_url = window.location.origin;
+        var urlAPI = base_url+"/dashboard/getColumns?tab=" + val
+        $.getJSON( urlAPI, function( data ) {
+            /*   var select = $("<select class=\"form-control\"></select>").attr("id", "tables").attr("onchange", "selectedCol1(this.value)");
+               select.append($("<option></option>").attr("value", "").text("Colonne 1"));
+               var data_length = data.length; */
+
+            var container = $('#col1List');
+            $("#col2List").html("");
+            var inputs = container.find('input');
+            var select = $("<select class=\"form-control\"></select>").attr("id", "cols").attr("onchange", "joinCol2(this.value)");
+            select.append($("<option></option>").attr("value", "").text("Selectionner colonne"))
+            for (var i = 0; i < data.length; i++) {
+
+                select.append($("<option></option>").attr("value", data[i]["COLUMN_NAME"]).text(data[i]["COLUMN_NAME"]))
+
+            }
+            $("#col2List").html(select);
+        });
+    }
+
+
+    function checkboxChange1(cb){
+        if (cb.checked == true){
+            tab1Cols.push(cb.value)
+        } else {
+            const index = tab1Cols.indexOf(cb.value);
+            tab1Cols.splice(index, 1);
+        }
+    }
+    function checkboxChange2(cb){
+        if (cb.checked == true){
+            tab2Cols.push(cb.value)
+        } else {
+            const index = tab2Cols.indexOf(cb.value);
+            tab2Cols.splice(index, 1);
+        }
+    }
+
+    function joinCol1(col){
+
+        if (col == ""){
+            tab1JoinCol = []
+        } else {
+            tab1JoinCol = []
+            tab1JoinCol.push(col)
+        }
+
+    }
+    function joinCol2(col){
+        if (col == ""){
+            tab2JoinCol = []
+        } else {
+            tab2JoinCol = []
+            tab2JoinCol.push(col)
+        }
+    }
+
+    $("#btnMerge").click( function()
+    {
+
+
+
+        if (tab1Cols.length === 0){
+            document.getElementById('alertMerge').innerHTML = 'Veuillez selectionner au moin une colonne du table : ' + checkedTabs[0];
+            document.getElementById('alertMerge').className  = ('label danger')
+            return false ;
+        }
+        if (tab2Cols.length === 0){
+            document.getElementById('alertMerge').innerHTML ='Veuillez selectionner au moin une colonne du table : ' + checkedTabs[1];
+            document.getElementById('alertMerge').className  = ('label danger')
+            return false ;
+        }
+        if (tab1JoinCol.length === 0){
+            document.getElementById('alertMerge').innerHTML = 'Veuillez selectionner la colonne de jointure  du table : ' + checkedTabs[0];
+            document.getElementById('alertMerge').className  = ('label danger')
+            return false ;
+        }
+        if (tab2JoinCol.length === 0){
+            document.getElementById('alertMerge').innerHTML = 'Veuillez selectionner la colonne de jointure  du table : ' + checkedTabs[1];
+            document.getElementById('alertMerge').className  = ('label danger')
+            return false ;
+        }
+
+        document.getElementById('alertMerge').innerHTML = '';
+        document.getElementById('alertMerge').className  = ('')
+
+        var base_url = window.location.origin;
+        var urlAPI = base_url+"/api/dataset/config?tab1=" + checkedTabs[0] + "&tab1Cols=" + JSON.stringify(tab1Cols) + "&tab1JoinCol=" +tab1JoinCol +
+        "&tab2=" + checkedTabs[1] + "&tab2Cols=" + JSON.stringify(tab2Cols) + "&tab2JoinCol=" +tab2JoinCol
+        alert(urlAPI)
+        console.log(urlAPI)
+
+
+
+
+    } )
+</script>
+{% endblock %}

@@ -1,0 +1,504 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+{% block css %}
+<!-- Datatables -->
+
+<link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+<link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+<link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+
+
+    <link href="../dist/jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../dist/jquery.vmap.js"></script>
+    <script type="text/javascript" src="../dist/maps/jquery.vmap.tunisia.js" charset="utf-8"></script>
+
+
+
+
+{% endblock %}
+{% block body %}
+
+
+    <!-- page content -->
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="page-title">
+                <div class="title_left">
+                    <h3>Liste des utilisateurs</h3>
+                </div>
+
+                
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12  ">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Liste des utilisateurs</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                               
+                                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <!--- baaaaarrrr ------------------------------------------------------ -->
+
+
+
+                            <!--- end / baaaaarrrr ------------------------------------------------------ -->
+                            
+                            <div class="col-sm-12"><table id="datatable" class="table table-striped table-bordered dataTable no-footer" style="width: 100%;" role="grid" aria-describedby="datatable_info">
+                                    <thead>
+                                    <tr role="row">
+                                        <th class="sorting_asc" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Name: activate to sort column descending" style="width: 79px;" aria-sort="ascending">ID</th>
+                                        <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 115px;">Email</th>
+                                        <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 73px;">Role</th>
+                                        <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="codePostal: activate to sort column ascending" style="width: 31px;">Code Postal</th>
+                                        <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Gouvernorat: activate to sort column ascending" style="width: 31px;">Gouvernorat</th>
+                                        <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style="width: 31px;">Action</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                    {% for user in users %}
+                                        <tr role="row" class="odd" >
+                                            <td  class="sorting_1" >{{ user.id }}</td>
+                                            <td>{{ user.email }}</td>
+                                            <td>
+                                                {# On boucle sur les rôles #}
+                                                {% if "ROLE_NULL" in user.roles %}
+                                                         desactivé
+                                                    {% elseif "ROLE_ADMIN" in user.roles %}
+                                                        Administrateur
+                                                    {% elseif "ROLE_USER" in user.roles %}
+                                                        Utilisateur
+                                                    {% endif %}
+
+                                            </td>
+                                            <td>
+                                                {{ user.codepostal }}
+
+                                            </td>
+                                            <td>
+                                                {# On boucle sur les rôles #}
+                                               {{ user.gouvernorat }}
+
+                                            </td>
+
+                                            <td>
+
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                        Default
+                                                    </button>
+                                                    <div class="dropdown-menu">
+
+
+                                                        {% if "ROLE_ADMIN" in user.roles %}
+                                                            <a class="dropdown-item revoke" href="#" data-value="{{ path('userDemote', { 'id': user.id }) }}">Revoke Admin</a>
+                                                            <a class="dropdown-item desactive" href="#" data-value="{{ path('userDesactive', { 'id': user.id }) }}">Desactiver compte</a>
+
+
+                                                        {% elseif "ROLE_NULL" in user.roles %}
+                                                            <a class="dropdown-item active" href="#" data-value="{{ path('userActive', { 'id': user.id }) }}">Activer compte</a>
+                                                        {% elseif "ROLE_USER" in user.roles %}
+                                                            <a class="dropdown-item promote" href="#" data-value="{{ path('userPromote', { 'id': user.id }) }}">Promote Admin</a>
+                                                            <a class="dropdown-item desactive" href="#" data-value="{{ path('userDesactive', { 'id': user.id }) }}">Desactiver compte</a>
+
+
+
+                                                        {% endif %}
+
+                                                        <a type="button" class=" dropdown-item change" data-toggle="modal" data-target="#exampleModal" data-whatever={{  user.id }}  href="#" data-value="{{ path('userChangePw', { 'id': user.id }) }}" >Change password</a>
+
+
+                                                        <a class="dropdown-item delete" href="#" data-value="{{ path('userDelete', { 'id': user.id }) }}" >Delete account </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <p>Aucun utilisateur inscrit</p>
+                                    {% endfor %}
+                                    </tbody>
+                                </table></div>
+
+                        </div>
+                        <div id="vmap" style="width: 700px; height: 637px;"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+    </div>
+    <!-- /page content -->
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" name="id" id="id">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">New password ::</label>
+                            <textarea type="text" class="form-control" name="pw" id="pw"></textarea>
+                        </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">fermer</button>
+                    <button type="button" class="btn btn-primary" onclick="changeBtn(this.form.id.value , this.form.pw.value)">Enregistrer</button>
+                </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        jQuery(document).ready(function () {
+            jQuery('#vmap').vectorMap({
+                map: 'tunisia',
+                onRegionClick: function (element, code, region) {
+                    var message = 'You clicked "'
+                        + region
+                        + '" which has the code: '
+                        + code.toUpperCase();
+
+                     //alert(message);
+                }
+            });
+            var stateCodePositions = //paste JSON object instead of one below //
+                {
+                    "Bizerte": {
+                        "x": 430.59089969688506,
+                        "y": 130.8095035582893
+                    },
+                    "Beja": {
+                        "x": 350.59089969688506,
+                        "y": 250.8095035582893
+                    },
+                    "Jendouba": {
+                        "x": 250.59089969688506,
+                        "y": 250.8095035582893
+                    },
+                    "Manouba": {
+                        "x": 460.59089969688506,
+                        "y": 200.8095035582893
+                    },
+                    "Ariana'": {
+                        "x": 560.59089969688506,
+                        "y": 160.8095035582893
+                    },
+                    "Tunis": {
+                        "x": 550.59089969688506,
+                        "y": 240.8095035582893
+                    },
+                    "BenArous": {
+                        "x": 550.59089969688506,
+                        "y": 280.8095035582893
+                    },
+                    "Nabeul": {
+                        "x": 650.59089969688506,
+                        "y": 280.8095035582893
+                    },
+                    "Zaghouan": {
+                        "x": 520.59089969688506,
+                        "y": 330.8095035582893
+                    },
+                    "LeKef": {
+                        "x": 250.59089969688506,
+                        "y": 410.8095035582893
+                    },
+                    "Siliana": {
+                        "x": 370.59089969688506,
+                        "y": 410.8095035582893
+                    },
+                    "Sousse": {
+                        "x":600.59089969688506,
+                        "y": 450.8095035582893
+                    },
+                    "Kairouan": {
+                        "x":480.59089969688506,
+                        "y": 520.8095035582893
+                    },
+                    "Kasserine": {
+                        "x":250.59089969688506,
+                        "y":630.8095035582893
+                    },
+                    "Monastir": {
+                        "x":670.59089969688506,
+                        "y": 530.8095035582893
+                    },
+                    "Mahdia": {
+                        "x":670.59089969688506,
+                        "y": 620.8095035582893
+                    },
+                    "SidiBouZid": {
+                        "x":420.59089969688506,
+                        "y":720.8095035582893
+                    },
+                    "Sfax": {
+                        "x":600.59089969688506,
+                        "y":780.8095035582893
+                    },
+                    "Gafsa": {
+                        "x":250.59089969688506,
+                        "y":870.8095035582893
+                    },
+                    "Touzeur": {
+                        "x":100.59089969688506,
+                        "y":1000.8095035582893
+                    },
+                    "Gabes": {
+                        "x":480.59089969688506,
+                        "y":1050.8095035582893
+                    },
+                    "Kebili": {
+                        "x":250.59089969688506,
+                        "y":1110.8095035582893
+                    },
+                    "Medenine": {
+                        "x":730.59089969688506,
+                        "y":1200.8095035582893
+                    },
+                    "Tataouine": {
+                        "x":480.59089969688506,
+                        "y":1450.8095035582893
+                    },
+                }  ;
+
+
+
+            var base_url = window.location.origin;
+            var urlAPI = base_url+"/utilisateurs/getCountGov"
+            $.getJSON( urlAPI, function( data ) {
+
+            var mapg= document.querySelector("#vmap g");
+            for (var i in stateCodePositions) {
+
+                var textNode = document.createElementNS("http://www.w3.org/2000/svg", "text");
+
+                textNode.setAttribute("x", stateCodePositions[i].x);
+                textNode.setAttribute("y", stateCodePositions[i].y);
+                textNode.setAttribute("style", "fill:red;stroke:blue; font-size: 40px ;border:solid 1px red;padding:2px 5px");
+                textNode.textContent = data[0]['cnt_' + i];
+                mapg.appendChild(textNode);
+            }
+            })
+        }); //  = data[0]['cnt_' + i]
+    </script>
+
+
+    <script>
+        function changeBtn(a , b) {
+        //    var text = $('textarea#password').val();
+            var base_url = window.location.origin;
+            var urlAPI = base_url+"/utilisateurs/changePw?id="+a+"&pw="+b
+            // window.location = url;
+            $.getJSON( urlAPI, function( data ) {
+
+                if (data[1]["resultat"] == "ok "){
+                    alert("ok")
+                }
+            });
+
+            $("#datatable").load(location.href + " #datatable");
+            document.location.href = String( document.location.href ).replace( "#/", "" );
+
+        }
+
+        $(document).ready(function () {
+
+            $('#exampleModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                var id = button.data('whatever') // Extract info from data-* attributes
+                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+                var modal = $(this)
+                modal.find('.modal-title').text('Changement de mot de passe ')
+                modal.find('.modal-body input').val(id)
+            })
+
+            $('.revoke').click(function (e) {
+                var url = $(this).data("value");
+                var base_url = window.location.origin;
+                var urlAPI = base_url+url
+
+               // window.location = url;
+                $.getJSON( urlAPI, function( data ) {
+
+
+                   if (data[1]["resultat"] == "ok "){
+                       alert("ok")
+                   }
+
+
+                });
+                $("#datatable").load(location.href + " #datatable");
+                document.location.href = String( document.location.href ).replace( "#/", "" );
+
+            });
+
+            $('.promote').click(function (e) {
+                var url = $(this).data("value");
+                var base_url = window.location.origin;
+                var urlAPI = base_url+url
+                // window.location = url;
+                $.getJSON( urlAPI, function( data ) {
+
+
+                    if (data[1]["resultat"] == "ok "){
+                        alert("ok")
+                    }
+
+
+                });
+                $("#datatable").load(location.href + " #datatable");
+                document.location.href = String( document.location.href ).replace( "#/", "" );
+            });
+
+            $('.change').click(function (e) {
+                var url = $(this).data("value");
+
+
+
+
+                // window.location = url;
+            });
+
+
+            function alertFn() {
+                swal({
+                        title: "An input!",
+                        text: "Write something interesting:",
+                        type: "input",
+                        showCancelButton: true,
+                        closeOnConfirm: false,
+                        animation: "slide-from-top",
+                        inputPlaceholder: "Write something"
+                    },
+                    function(inputValue){
+                        if (inputValue === null) return false;
+
+                        if (inputValue === "") {
+                            swal.showInputError("You need to write something!");
+                            return false
+                        }
+
+                        swal("Nice!", "You wrote: " + inputValue, "success");
+                    });
+            }
+
+            $('.delete').click(function (e) {
+                var url = $(this).data("value");
+                var base_url = window.location.origin;
+                var urlAPI = base_url+url
+                // window.location = url;
+                $.getJSON( urlAPI, function( data ) {
+                    if (data[1]["resultat"] == "ok "){
+                        alert("ok")
+                    }
+                });
+
+                $("#datatable").load(location.href + " #datatable");
+                document.location.href = String( document.location.href ).replace( "#/", "" );
+
+            });
+
+            $('.active').click(function (e) {
+
+                var url = $(this).data("value");
+
+                var base_url = window.location.origin;
+                var urlAPI = base_url+url
+                // window.location = url;
+
+                $.getJSON( urlAPI, function( data ) {
+                    if (data[1]["resultat"] == "ok "){
+                        alert("ok")
+                    }
+                });
+
+                $("#datatable").load(location.href + " #datatable");
+                document.location.href = String( document.location.href ).replace( "#/", "" );
+
+            });
+
+            $('.desactive').click(function (e) {
+
+                var url = $(this).data("value");
+
+                var base_url = window.location.origin;
+                var urlAPI = base_url+url
+             alert(urlAPI);
+                $.getJSON( urlAPI, function( data ) {
+                    if (data[1]["resultat"] == "ok "){
+                        alert("ok")
+                    }
+                });
+
+                $("#datatable").load(location.href + " #datatable");
+                document.location.href = String( document.location.href ).replace( "#/", "" );
+
+            });
+
+        })
+
+
+    </script>
+
+
+
+    <script src="../vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="../vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="../vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="../vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="../vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="../vendors/jszip/dist/jszip.min.js"></script>
+    <script src="../vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="../vendors/pdfmake/build/vfs_fonts.js"></script>
+
+
+   <!--  <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>  --->
+
+    <script type="text/javascript" src="../dist/jquery.vmap.js"></script>
+    <script type="text/javascript" src="../dist/maps/jquery.vmap.tunisia.js" charset="utf-8"></script>
+
+{% endblock %}

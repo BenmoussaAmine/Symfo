@@ -1,0 +1,284 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des datasets{% endblock %}
+{% block css %}
+    <!-- Datatables -->
+    <style>
+        .label {
+            color: white;
+            padding: 8px;
+            font-family: Arial;
+        }
+        .success {background-color: #04AA6D;} /* Green */
+        .info {background-color: #2196F3;} /* Blue */
+        .warning {background-color: #ff9800;} /* Orange */
+        .danger {background-color: #f44336;} /* Red */
+        .other {background-color: #e7e7e7; color: black;} /* Gray */
+    </style>
+
+    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+
+
+    <link href="../dist/jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../dist/jquery.vmap.js"></script>
+    <script type="text/javascript" src="../dist/maps/jquery.vmap.tunisia.js" charset="utf-8"></script>
+
+
+
+
+{% endblock %}
+{% block body %}
+
+
+    <!-- page content -->
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="page-title">
+                <div class="title_left">
+                    <h3>liste des datasets</h3>
+                </div>
+
+
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12  ">
+                    <div class="x_panel">
+                        <div class="x_title">
+
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+
+                                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+
+   <!---------------------------------------------------------------------------------------------------->
+                            <h1>Filtre datasets</h1>
+                            <div class="col-md-6 col-sm-6  ">
+
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon3">Saisir un mot clé</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="key" aria-describedby="basic-addon3"
+                                           value="{{ key }}">
+
+                                </div>
+                            </div>
+                            <label id="alertFilter" ></label>
+
+                            <div class="col-sm-12">
+                                <div class="col-md-4 col-sm-4  ">
+                                </div>
+                            <div class="col-md-1 col-sm-1  ">
+
+
+                                <button type="submit"  class="btn btn-round btn-success"  id ="btnFilter">Filtrer</button>
+                            </div>
+
+                            <div class="col-md-2 col-sm-2  ">
+
+
+                                <button type="submit"  class="btn btn-round btn-danger" id="btnAnnuler" >Annuler</button>
+                            </div>
+                            </div>
+                            <!---------------------------------------------------------------------------------------------------->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12  ">
+                    <div class="x_panel">
+                        <div class="x_title">
+
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+
+                                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <!--- baaaaarrrr ------------------------------------------------------ -->
+
+
+                            <!--- end / baaaaarrrr ------------------------------------------------------ -->
+
+
+                            <div>
+                                <h1>Liste des datasets</h1>
+                                <div class="col-md-10 col-sm-10  ">
+
+
+                                </div>
+
+                                <div class="col-md-2 col-sm-2  ">
+
+
+                                    <a href="{{ path('createDataset') }}" class="btn btn-primary">Créer dataset</a>
+                                </div>
+
+                                <br>
+                                <div class="col-sm-12">
+                                    <table id="datatable" class="table table-striped table-bordered dataTable no-footer"
+                                           style="width: 100%;" role="grid" aria-describedby="datatable_info">
+                                        <thead>
+                                        <tr role="row">
+                                            <th class="sorting_asc" tabindex="0" aria-controls="datatable" rowspan="1"
+                                                colspan="1" aria-label="Nom: activate to sort column descending"
+                                                style="width: 79px;" aria-sort="ascending">Nom
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1"
+                                                colspan="1" aria-label="Tables: activate to sort column ascending"
+                                                style="width: 115px;">Tables
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1"
+                                                colspan="1" aria-label="Action: activate to sort column ascending"
+                                                style="width: 73px;">Action
+                                            </th>
+
+                                        </tr>
+                                        </thead>
+
+                                        <tbody>
+
+                                        {% for dataset in datasets %}
+                                            <tr role="row" class="odd">
+                                                <td class="sorting_1">{{ dataset.nom }}</td>
+                                                <td>
+                                                    {{ dataset.tables|join(', ') }}
+
+
+                                                </td>
+                                                <td>
+
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-secondary dropdown-toggle"
+                                                                data-toggle="dropdown"
+                                                                aria-haspopup="true" aria-expanded="false">
+                                                            Action
+                                                        </button>
+                                                        /
+                                                        <div class="dropdown-menu">
+
+
+                                                            <a class="dropdown-item revoke" href="#" data-value="">Configurer</a>
+                                                            <a class="dropdown-item desactive" href="#" data-value="">Supprimer</a>
+
+
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+                                        {% else %}
+                                            <p>Aucun utilisateur inscrit</p>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+    </div>
+    <!-- /page content -->
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+
+        $(document).ready(function () {
+
+            $( ".dataTables_filter" ).remove();
+        })
+
+        $("#btnFilter").click( function() {
+
+             var t = $('#key').val()
+               if (t.length < 1) {
+                   document.getElementById('alertFilter').innerHTML = 'Veuillez saisir un mot clé';
+                   document.getElementById('alertFilter').className  = ('label danger');
+                   return false
+               }else {
+                   var base_url = window.location.origin;
+                   document.location.href = String( base_url + "/datasetFiltred?key=" + t);
+               }
+
+
+        });
+
+        $("#btnAnnuler").click( function() {
+
+
+            var base_url = window.location.origin;
+            var current_url = base_url + "/dataset" ;
+
+            if  (window.location.href == current_url){
+                document.getElementById('alertFilter').innerHTML = '';
+                document.getElementById('key').value = '';
+                document.getElementById('alertFilter').className  = ('');
+            } else {
+                document.location.href = String( base_url + "/dataset");
+            }
+
+
+
+        });
+
+
+
+
+
+    </script>
+    <script src="../vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="../vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="../vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="../vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="../vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="../vendors/jszip/dist/jszip.min.js"></script>
+    <script src="../vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="../vendors/pdfmake/build/vfs_fonts.js"></script>
+
+
+{% endblock %}

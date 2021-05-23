@@ -1,0 +1,14 @@
+#index:
+#    path: /
+#    controller: App\Controller\SecurityController::login
+app_lucky_number:
+  path: /lucky/number
+  controller: App\Controller\Statistiques::number
+api_login_check:
+  path: /api/login_check
+dashboard:
+  type: rest
+  resource: App\Controller\DashboardController
+  prefix : api
+captcha_routing:
+  resource: "@CaptchaBundle/Resources/config/routing.yml"

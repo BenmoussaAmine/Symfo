@@ -1,0 +1,213 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+{% block css %}
+    <!-- Datatables -->
+    <style>
+        .label {
+            color: white;
+            padding: 8px;
+            font-family: Arial;
+        }
+        .success {background-color: #04AA6D;} /* Green */
+        .info {background-color: #2196F3;} /* Blue */
+        .warning {background-color: #ff9800;} /* Orange */
+        .danger {background-color: #f44336;} /* Red */
+        .other {background-color: #e7e7e7; color: black;} /* Gray */
+    </style>
+
+    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+
+
+    <link href="../dist/jqvmap.css" media="screen" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../dist/jquery.vmap.js"></script>
+    <script type="text/javascript" src="../dist/maps/jquery.vmap.tunisia.js" charset="utf-8"></script>
+
+
+
+
+{% endblock %}
+{% block body %}
+
+
+    <!-- page content -->
+    <div class="right_col" role="main">
+        <div class="">
+            <div class="page-title">
+                <div class="title_left">
+                    <h3>creer dataset</h3>
+                </div>
+
+              
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12  ">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                               
+                                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <!--- baaaaarrrr ------------------------------------------------------ -->
+
+
+
+                            <!--- end / baaaaarrrr ------------------------------------------------------ -->
+                            <h1>nom de  dataset</h1>
+
+                            <div class="form-group row">
+                            <div class="col-md-6 col-sm-6  ">
+
+                            <input type="text" required="required" id="inputId" class="form-control ">
+                            </div>
+                                <div>
+                                
+                                    <button type="submit" class="btn btn-round btn-success" id ="btnAdd">Créer</button>
+                                    <a href="{{ path('dataset') }}" class="btn btn-round btn-danger">Annuler</a>
+
+                                </div>
+                            </div>
+                            <label id="alertName" ></label>
+                            <table id="col1List">
+
+                            </table>
+                            <label id="alertTables" ></label>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+    </div>
+    <!-- /page content -->
+
+
+{% endblock %}
+{% block js %}
+    <script>
+        var tabs = []
+        $(document).ready(function(){
+            showTabList();
+        })
+        function checkboxChange(cb){
+            if (cb.checked == true){
+                tabs.push(cb.value)
+            } else {
+                const index = tabs.indexOf(cb.value);
+                if (index > -1) {
+                    tabs.splice(index, 1);
+                }
+            }
+
+            if (nbChecked == 1 ) {
+                document.getElementById("chartList").style.visibility = "visible";
+                document.getElementById("content").style.visibility = "hidden";
+                showPieChartList();
+            } else if (nbChecked == 2){
+                document.getElementById("chartList").style.visibility = "visible";
+                document.getElementById("content").style.visibility = "hidden";
+                showAllChartList();
+            }
+        }
+        function showTabList() {
+            var base_url = window.location.origin;
+            var urlAPI = base_url+"/dashboard/listTables"
+
+            $.getJSON( urlAPI, function( data ) {
+
+                var container = $('#col1List');
+                $("#col1List").html("");
+                var inputs = container.find('input');
+                for (var i = 0; i < data.length; i++) {
+
+                    lib = "    " + data[i]["COLUMN_NAME"];
+                    $('<input />', { type: 'checkbox', id: data[i]["TABLE_NAME"], value: data[i]["TABLE_NAME"] , name: "tabs[]" ,  class:"flat" , onclick:'checkboxChange(this);' }).appendTo(container);
+
+                    $('<label />', { 'for': data[i]["table_name"], text:data[i]["TABLE_NAME"] , style:'padding-left:20px'}).appendTo(container);
+                    $('<br>').appendTo(container);
+
+                }
+                // $("#col1List").html(select);
+            });
+        }
+
+        $("#btnAdd").click( function()
+            {
+
+
+
+                var t = $('#inputId').val()
+
+                if ( t == ""){
+                    document.getElementById('alertName').innerHTML = 'veuillez saisir nom dataset';
+                    document.getElementById('alertName').className  = ('label danger');
+                    document.getElementById('alertTables').innerHTML = '';
+                    document.getElementById('alertTables').className  = ('');
+                    return  false
+                } else {
+                    document.getElementById('alertName').innerHTML = '';
+                    document.getElementById('alertName').className  = ('');
+
+
+                }
+
+
+                if (tabs.length < 2 ) {
+                    document.getElementById('alertTables').innerHTML = 'Veuillez saisir au moin deux tables';
+                    document.getElementById('alertTables').className  = ('label danger');
+
+                    return false
+                } else {
+                    document.getElementById('alertTables').innerHTML = '';
+                    document.getElementById('alertTables').className  = ('');
+
+                }
+
+                var base_url = window.location.origin;
+                var urlAPI = base_url+"/api/dataset/create?nom=" + t + "&tabs=" + JSON.stringify(tabs)
+                $.ajax({
+                    type: "POST",
+                    url: urlAPI,
+                    // The key needs to match your method's input parameter (case-sensitive).
+                    data: JSON.stringify({ Markers: "az" }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(data){
+                        document.location.href = String( base_url + "/dataset");},
+                    error: function(errMsg) {
+                        document.getElementById('alertName').innerHTML = 'Nom existant';
+                        document.getElementById('alertName').className  = ('label danger');
+                    }
+                });
+
+
+            }
+        );
+
+
+    </script>
+{% endblock %}
