@@ -3,6 +3,62 @@
 {% block title %}Liste des utilisateurs{% endblock %}
 {% block css %}
     <style>
+        /* Center the loader */
+        .disabledbutton {
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        #loader {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 1;
+            width: 120px;
+            height: 120px;
+            margin: -76px 0 0 -76px;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Add animation to "page content" */
+        .animate-bottom {
+            position: relative;
+            -webkit-animation-name: animatebottom;
+            -webkit-animation-duration: 1s;
+            animation-name: animatebottom;
+            animation-duration: 1s
+        }
+
+        @-webkit-keyframes animatebottom {
+            from { bottom:-100px; opacity:0 }
+            to { bottom:0px; opacity:1 }
+        }
+
+        @keyframes animatebottom {
+            from{ bottom:-100px; opacity:0 }
+            to{ bottom:0; opacity:1 }
+        }
+
+        #myDiv {
+            display: none;
+            text-align: center;
+        }
+    </style>
+    <style>
         .label {
             color: white;
             padding: 8px;
@@ -265,6 +321,8 @@
 
                                 </div>
                             </div>
+
+                            <div id="loader"> </div>
                         </div>
                     </div>
                 </div>
@@ -290,9 +348,14 @@
     var tab2Cols=[];
     var tab1JoinCol = []
     var tab2JoinCol = []
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const dataset = urlParams.get('dataset')
 
 
     $( document ).ready(function() {
+        document.getElementById("loader").style.display = "none";
+
         document.getElementById("colsTab1").style.visibility = "hidden";
         document.getElementById("colsTab2").style.visibility = "hidden";
         document.getElementById("nameTab1").style.visibility = "hidden";
@@ -314,7 +377,7 @@
 
         var data = $(this).text().replace(/ /g,'').trimLeft().trimRight();
 
-        var tableName = data.substr(0,data.substring(0).search(/[^A-Za-z]/))
+        var tableName = data.substr(0,data.substring(0).search(/[^A-Za-z0-9]/))
 
        // alert(tableName);
 
@@ -423,6 +486,7 @@
     function showColsList1(val) {
         var base_url = window.location.origin;
         var urlAPI = base_url+"/dashboard/getColumns?tab=" + val
+
         $.getJSON( urlAPI, function( data ) {
             /*   var select = $("<select class=\"form-control\"></select>").attr("id", "tables").attr("onchange", "selectedCol1(this.value)");
                select.append($("<option></option>").attr("value", "").text("Colonne 1"));
@@ -509,6 +573,10 @@
         } else {
             tab1JoinCol = []
             tab1JoinCol.push(col)
+             var index = tab1Cols.indexOf(col);
+            if (index > -1){
+                tab1Cols.splice(index, 1);
+            }
         }
 
     }
@@ -518,6 +586,10 @@
         } else {
             tab2JoinCol = []
             tab2JoinCol.push(col)
+            var index = tab2Cols.indexOf(col);
+            if (index > -1){
+                tab2Cols.splice(index, 1);
+            }
         }
     }
 
@@ -550,15 +622,41 @@
         document.getElementById('alertMerge').innerHTML = '';
         document.getElementById('alertMerge').className  = ('')
 
+        document.getElementById("loader").style.display = "block";
+
         var base_url = window.location.origin;
-        var urlAPI = base_url+"/api/dataset/config?tab1=" + checkedTabs[0] + "&tab1Cols=" + JSON.stringify(tab1Cols) + "&tab1JoinCol=" +tab1JoinCol +
+        var urlAPI = base_url+"/api/dataset/config?dataset=" + dataset +"&tab1=" + checkedTabs[0] + "&tab1Cols=" + JSON.stringify(tab1Cols) + "&tab1JoinCol=" +tab1JoinCol +
         "&tab2=" + checkedTabs[1] + "&tab2Cols=" + JSON.stringify(tab2Cols) + "&tab2JoinCol=" +tab2JoinCol
-        alert(urlAPI)
+
         console.log(urlAPI)
+        $.ajax({
+            type: "POST",
+            url: urlAPI,
+            success: function(data){
+                Swal.fire(
+                    'Good job!',
+                    'Table Jointure créer!',
+                    'success'
+                ) ;
+                window.location.reload();
+                document.getElementById("loader").style.display = "none";
+            } ,
+            error: function(errMsg) {
+                Swal.fire(
+                        'Error!',
+                    'Table Jointure existant!',
+                    'error'
+                ) ;
+                document.getElementById("loader").style.display = "none";
+                document.getElementById("btnClear").style.visibility = "visible";
+            },
+        });
+
 
 
 
 
     } )
 </script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {% endblock %}

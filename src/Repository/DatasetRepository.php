@@ -82,6 +82,25 @@ class DatasetRepository extends ServiceEntityRepository
     }
 
 
+    public function merge( $tab1 , $tab2 , $queryCols , $tab1JoinCol , $tab2JoinCol  ) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = "CREATE TABLE ".$tab1."_".$tab2."  AS 
+  (SELECT 
+			".$queryCols."
+   FROM   ".$tab1." 
+          INNER JOIN  ".$tab2."  
+                  ON ".$tab1.".".$tab1JoinCol." =  ".$tab2.".".$tab2JoinCol.");
+";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAllAssociative();
+    }
+
+
+
+
 
 
     // /**

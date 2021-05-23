@@ -119,7 +119,7 @@ class DatasetController extends AbstractController
 
         $response = new Response($jsonContent);
 
-        dump($response);
+
 
         $response->headers->set('Content-Type', 'application/json');
 
@@ -184,7 +184,7 @@ class DatasetController extends AbstractController
 
         $dataset = $request->get('dataset') ;
         $table = $request->get('table');
-        $lst = $repository->findByName( $dataset , $table);
+        $lst = $repository->findByName( $dataset ); /////////////////////////2nd par : table
         // $lst = $repository->findAll();
         json_encode($lst);
 
@@ -219,7 +219,6 @@ class DatasetController extends AbstractController
         array_push($tablesArray, $table);
 
 
-        $id = $parametersAsArray[0]['id'];
 
         $lst = $repository->addToDataset( $dataset , json_encode($tablesArray));
 
@@ -267,6 +266,9 @@ class DatasetController extends AbstractController
      */
     public function apiConfigDataset(Request $request): Response
     {
+        $dataset = $request->get('dataset');
+
+
         $tab1 = $request->get('tab1');
         $tab1Cols = $request->get('tab1Cols');
         $tab1JoinCol = $request->get('tab1JoinCol');
@@ -275,8 +277,93 @@ class DatasetController extends AbstractController
         $tab2Cols = $request->get('tab2Cols');
         $tab2JoinCol = $request->get('tab2JoinCol');
 
+        $queryTab1 = "";
+        for ($i = 0; $i < count(json_decode($tab1Cols)); $i++){
+            $queryTab1 = $queryTab1 . $tab1 . "." . json_decode($tab1Cols)[$i] . "," ;
+        }
 
-        dump("tab1   " . $tab1);
+        $queryTab2 = "";
+        for ($i = 0; $i < count(json_decode($tab2Cols)); $i++){
+            $queryTab2 = $queryTab2 . $tab2 . "." . json_decode($tab2Cols)[$i] . "," ;
+        }
+
+        $queryCols = $queryTab1 . substr($queryTab2, 0, -1);
+
+        $queryCols = $tab1. "." . $tab1JoinCol."," .$queryCols ;
+
+
+        $repository = $this->getDoctrine()->getRepository(Dataset::class);
+        $entityManager = $this->getDoctrine()->getManager();
+
+
+
+        ////////////////////////////////////////////////////////////////
+        $lst = $repository->merge($tab1 , $tab2 , $queryCols , $tab1JoinCol , $tab2JoinCol );
+        // $lst = $repository->findAll();
+        ///////////////////////////////////////////////////////////////////////////
+
+        $lst = $repository->findByName( $dataset ); /////////////////////////2nd par : table
+        // $lst = $repository->findAll();
+        json_encode($lst);
+
+        $encoders = [new JsonEncoder()];
+
+
+        $normalizers = [new ObjectNormalizer()];
+
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $jsonContent = $serializer->serialize($lst, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+
+        $response = new Response($jsonContent);
+        $response->headers->set('Content-Type', 'application/json');
+        $parametersAsArray = [];
+        if ($content = $response->getContent()) {
+            $parametersAsArray = json_decode($content, true);
+        }
+
+        $tables = $parametersAsArray[0]['tables'];
+        $tablesArray = json_decode($tables, true);
+
+
+        if (empty($tablesArray) ) {
+            $tablesArray = array();
+        }
+        array_push($tablesArray, $tab1."_".$tab2);
+        $lst = $repository->addToDataset( $dataset , json_encode($tablesArray));
+
+        ////////////////////////// parrsing
+        json_encode($lst);
+
+        $encoders = [new JsonEncoder()];
+
+        $normalizers = [new ObjectNormalizer()];
+
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $jsonContent = $serializer->serialize($lst, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+
+        $response = new Response($jsonContent);
+
+        dump($response);
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+
+
+
+     /*  dump("tab1   " . $tab1);
         dump("tab1Cols   " . $tab1Cols);
         dump("tab1JoinCol   " . $tab1JoinCol);
 
@@ -285,7 +372,7 @@ class DatasetController extends AbstractController
         dump("tab2JoinCol   " . $tab2JoinCol);
 
 
-        die();
+        die();*/
     }
 
 
