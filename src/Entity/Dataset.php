@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DatasetRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,10 +24,17 @@ class Dataset
      */
     private $nom;
 
+
+
     /**
-     * @ORM\Column(type="json", nullable=true)
+     * @ORM\OneToMany(targetEntity=DatasetTables::class, mappedBy="id_dataset")
      */
-    private $tables = [];
+    private $datasetTables;
+
+    public function __construct()
+    {
+        $this->datasetTables = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -44,14 +53,35 @@ class Dataset
         return $this;
     }
 
-    public function getTables(): ?array
+
+
+
+    /**
+     * @return Collection|DatasetTables[]
+     */
+    public function getDatasetTables(): Collection
     {
-        return $this->tables;
+        return $this->datasetTables;
     }
 
-    public function setTables(?array $tables): self
+    public function addDatasetTable(DatasetTables $datasetTable): self
     {
-        $this->tables = $tables;
+        if (!$this->datasetTables->contains($datasetTable)) {
+            $this->datasetTables[] = $datasetTable;
+            $datasetTable->setIdDataset($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDatasetTable(DatasetTables $datasetTable): self
+    {
+        if ($this->datasetTables->removeElement($datasetTable)) {
+            // set the owning side to null (unless already changed)
+            if ($datasetTable->getIdDataset() === $this) {
+                $datasetTable->setIdDataset(null);
+            }
+        }
 
         return $this;
     }

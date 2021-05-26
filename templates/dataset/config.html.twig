@@ -344,8 +344,10 @@
 <script>
     var checkedTabs = []
     var nbChecked = 0;
-    var tab1Cols=[];
-    var tab2Cols=[];
+    var tab1Cols = [];
+    var tab1Agreg = [];
+    var tab2Cols = [];
+    var tab2Agreg = [];
     var tab1JoinCol = []
     var tab2JoinCol = []
     const queryString = window.location.search;
@@ -428,10 +430,14 @@
         document.getElementById('alertMerge').innerHTML = '';
         document.getElementById('alertMerge').className  = ('')
 
+
+
          checkedTabs = []
          nbChecked = 0;
-         tab1Cols=[];
-         tab2Cols=[];
+         tab1Cols = [];
+         tab1Agreg = [];
+         tab2Cols = [];
+         tab2Agreg = [];
          tab1JoinCol = []
          tab2JoinCol = []
     }
@@ -472,11 +478,15 @@
             $("#colsTab1").html("");
             var inputs = container.find('input');
             for (var i = 0; i < data.length; i++) {
+                $('<label />', { 'for': data[i]["COLUMN_NAME"], text:data[i]["COLUMN_NAME"] , style:'padding-left:20px ; color:purple'}).appendTo(container);
+                $('<br>').appendTo(container);
+                $('<input />', { type: 'checkbox', id: data[i]["COLUMN_NAME"]+"Tab1"+"Mes", value: data[i]["COLUMN_NAME"] , class:"flat" , onclick:'cbTab1Mesure(this);' }).appendTo(container);
+                $('<label />', { 'for': data[i]["COLUMN_NAME"], text: "Mesure" , style:'padding-left:20px'}).appendTo(container);
 
-                lib = "    " + data[i]["COLUMN_NAME"];
-                $('<input />', { type: 'checkbox', id: data[i]["COLUMN_NAME"], value: data[i]["COLUMN_NAME"] , class:"flat" , onclick:'checkboxChange1(this);' }).appendTo(container);
+                $('<br>').appendTo(container);
+                $('<input />', { type: 'checkbox', id: data[i]["COLUMN_NAME"]+"Tab1"+"Dim", value: data[i]["COLUMN_NAME"] , class:"flat" , onclick:'cbTab1Dimension(this);' }).appendTo(container);
 
-                $('<label />', { 'for': data[i]["COLUMN_NAME"], text:data[i]["COLUMN_NAME"] , style:'padding-left:20px'}).appendTo(container);
+                $('<label />', { 'for': data[i]["COLUMN_NAME"], text: "Dimension" , style:'padding-left:20px'}).appendTo(container);
                 $('<br>').appendTo(container);
 
             }
@@ -517,9 +527,14 @@
             for (var i = 0; i < data.length; i++) {
 
                 lib = "    " + data[i]["COLUMN_NAME"];
-                $('<input />', { type: 'checkbox', id: data[i]["COLUMN_NAME"], value: data[i]["COLUMN_NAME"] , class:"flat" , onclick:'checkboxChange2(this);' }).appendTo(container);
+                $('<label />', { 'for': data[i]["COLUMN_NAME"], text:data[i]["COLUMN_NAME"] , style:'padding-left:20px ; color:purple'}).appendTo(container);
+                $('<br>').appendTo(container);
+                $('<input />', { type: 'checkbox', id: data[i]["COLUMN_NAME"]+"Tab2"+"Mes", value: data[i]["COLUMN_NAME"] , class:"flat" , onclick:'cbTab2Mesure(this);' }).appendTo(container);
+                $('<label />', { 'for': data[i]["COLUMN_NAME"], text: "Mesure" , style:'padding-left:20px'}).appendTo(container);
+                $('<br>').appendTo(container);
+                $('<input />', { type: 'checkbox', id: data[i]["COLUMN_NAME"]+"Tab2"+"Dim", value: data[i]["COLUMN_NAME"] , class:"flat" , onclick:'cbTab2Dimension(this);' }).appendTo(container);
 
-                $('<label />', { 'for': data[i]["COLUMN_NAME"], text:data[i]["COLUMN_NAME"] , style:'padding-left:20px'}).appendTo(container);
+                $('<label />', { 'for': data[i]["COLUMN_NAME"], text:"Dimension" , style:'padding-left:20px'}).appendTo(container);
                 $('<br>').appendTo(container);
 
             }
@@ -549,22 +564,91 @@
     }
 
 
-    function checkboxChange1(cb){
+    function cbTab1Mesure(cb){
         if (cb.checked == true){
-            tab1Cols.push(cb.value)
+            var element = document.getElementById(cb.value+"Tab1"+"Dim");
+            if (element.checked == true){
+                element.checked = false;
+                const index = tab1Cols.indexOf(cb.value);
+                tab1Agreg[index] =  "Mesure"
+            } else {
+                tab1Cols.push(cb.value)
+                tab1Agreg.push("Mesure")
+            }
+
         } else {
             const index = tab1Cols.indexOf(cb.value);
             tab1Cols.splice(index, 1);
+            tab1Agreg.splice(index, 1);
+
         }
+        console.log(tab1Cols)
+        console.log(tab1Agreg)
     }
-    function checkboxChange2(cb){
+
+    function cbTab1Dimension(cb){
         if (cb.checked == true){
-            tab2Cols.push(cb.value)
+            var element = document.getElementById(cb.value+"Tab1"+"Mes");
+            if (element.checked == true){
+                element.checked = false;
+                const index = tab1Cols.indexOf(cb.value);
+                tab1Agreg[index] =  "Dimension"
+            } else {
+                tab1Cols.push(cb.value)
+                tab1Agreg.push("Dimension")
+            }
+
+        } else {
+            const index = tab1Cols.indexOf(cb.value);
+            tab1Cols.splice(index, 1);
+            tab1Agreg.splice(index, 1);
+        }
+        console.log(tab1Cols)
+        console.log(tab1Agreg)
+    }
+    function cbTab2Mesure(cb){
+        if (cb.checked == true){
+            var element = document.getElementById(cb.value+"Tab2"+"Dim");
+            if (element.checked == true){
+                element.checked = false;
+                const index = tab2Cols.indexOf(cb.value);
+                tab2Agreg[index] =  "Mesure"
+            } else {
+                tab2Cols.push(cb.value)
+                tab2Agreg.push("Mesure")
+            }
+
+        } else {
+            const index = tab1Cols.indexOf(cb.value);
+            tab2Cols.splice(index, 1);
+            tab2Agreg.splice(index, 1);
+
+        }
+        console.log(tab2Cols)
+        console.log(tab2Agreg)
+    }
+
+    function cbTab2Dimension(cb){
+        if (cb.checked == true){
+            var element = document.getElementById(cb.value+"Tab2"+"Mes");
+            if (element.checked == true){
+                element.checked = false;
+                const index = tab2Cols.indexOf(cb.value);
+                tab2Agreg[index] =  "Dimension"
+            } else {
+                tab2Cols.push(cb.value)
+                tab2Agreg.push("Dimension")
+            }
+
         } else {
             const index = tab2Cols.indexOf(cb.value);
             tab2Cols.splice(index, 1);
+            tab2Agreg.splice(index, 1);
         }
+        console.log(tab2Cols)
+        console.log(tab2Agreg)
     }
+
 
     function joinCol1(col){
 
@@ -572,11 +656,13 @@
             tab1JoinCol = []
         } else {
             tab1JoinCol = []
-            tab1JoinCol.push(col)
+
              var index = tab1Cols.indexOf(col);
             if (index > -1){
                 tab1Cols.splice(index, 1);
+                tab1Agreg.splice(index, 1);
             }
+            tab1JoinCol.push(col)
         }
 
     }
@@ -585,11 +671,14 @@
             tab2JoinCol = []
         } else {
             tab2JoinCol = []
-            tab2JoinCol.push(col)
+
             var index = tab2Cols.indexOf(col);
             if (index > -1){
                 tab2Cols.splice(index, 1);
+                tab2Agreg.splice(index, 1);
             }
+
+            tab2JoinCol.push(col)
         }
     }
 
@@ -625,8 +714,8 @@
         document.getElementById("loader").style.display = "block";
 
         var base_url = window.location.origin;
-        var urlAPI = base_url+"/api/dataset/config?dataset=" + dataset +"&tab1=" + checkedTabs[0] + "&tab1Cols=" + JSON.stringify(tab1Cols) + "&tab1JoinCol=" +tab1JoinCol +
-        "&tab2=" + checkedTabs[1] + "&tab2Cols=" + JSON.stringify(tab2Cols) + "&tab2JoinCol=" +tab2JoinCol
+        var urlAPI = base_url+"/api/dataset/config?dataset=" + dataset +"&tab1=" + checkedTabs[0] + "&tab1Cols=" + JSON.stringify(tab1Cols) + "&tab1Agreg=" + JSON.stringify(tab1Agreg) + "&tab1JoinCol=" +tab1JoinCol +
+        "&tab2=" + checkedTabs[1] + "&tab2Cols=" + JSON.stringify(tab2Cols) + "&tab2Agreg=" + JSON.stringify(tab2Agreg) + "&tab2JoinCol=" +tab2JoinCol
 
         console.log(urlAPI)
         $.ajax({

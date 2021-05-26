@@ -164,7 +164,13 @@
                                             <tr role="row" class="odd">
                                                 <td class="sorting_1">{{ dataset.nom }}</td>
                                                 <td>
-                                                    {{ dataset.tables|join(', ') }}
+
+                                                    {% for table in dataset.getDatasetTables%}
+
+                                                        {{ table.getTableName()}}
+
+                                                        ,
+                                                    {% endfor %}
 
 
                                                 </td>
@@ -180,7 +186,7 @@
                                                         <div class="dropdown-menu">
 
 
-                                                            <a class="dropdown-item revoke" href="{{ path('configDataset', {dataset: dataset.nom}) }}" data-value="">Configurer</a>
+                                                            <a class="dropdown-item revoke" href="{{ path('configDataset', {dataset: dataset.id}) }}" data-value="">Configurer</a>
                                                             <a class="dropdown-item desactive" href="#" data-value="">Supprimer</a>
 
 

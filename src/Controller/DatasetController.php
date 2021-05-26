@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Dashboard;
 use App\Entity\Dataset;
+use App\Entity\DatasetTables;
+use App\Entity\DatasetTablesFields;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,6 +32,7 @@ class DatasetController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
         $lst = $repository->findAll($entityManager);
+
 
         return $this->render('dataset/index.html.twig', [
             'datasets' => $lst, 'key' => ""
@@ -145,9 +148,24 @@ class DatasetController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
 
         $lst = $repository->createDataset($nom);
-        $lst = $repository->addToDataset( $nom , $tabs);
-        // $lst = $repository->findAll();
-        json_encode($lst);
+        for ($i = 0; $i < count(json_decode($tabs)) ; $i++){
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $repository = $this->getDoctrine()->getRepository(Dataset::class);
+            $ds = $repository->findOneBy(['nom' => $nom]);
+
+           dump(json_decode($tabs)[$i]);
+           $dsTab = new DatasetTables();
+           $dsTab->setTableName(json_decode($tabs)[$i]);
+           $dsTab->setIdDataset($ds);
+            $entityManager->persist($dsTab);
+            $entityManager->flush();
+
+
+            // $queryTab1 = $queryTab1 . $tab1 . "." . json_decode($tab1Cols)[$i] . "," ;
+        }
+
+        json_encode($dsTab);
 
         $encoders = [new JsonEncoder()];
 
@@ -168,8 +186,11 @@ class DatasetController extends AbstractController
 
         $response->headers->set('Content-Type', 'application/json');
 
-
         return $response;
+
+
+
+
     }
 
     // API  :   http://127.0.0.1:8000/api/dataset/add?dataset=az&table=testing
@@ -235,20 +256,21 @@ class DatasetController extends AbstractController
     public function configDataset(Request $request)
     {
         $repository1 = $this->getDoctrine()->getRepository(Dataset::class);
-        $lst = $repository1->getTables( $request->get("dataset"));
+        $dataset = $repository1->findOneBy(['id' => $request->get("dataset")]);
+
         $repository2 = $this->getDoctrine()->getRepository(Dashboard::class);
 
 
 
         $array = [];
-        $lstTablesArray =  json_decode(json_decode(json_encode($lst))[0]->tables);
-        foreach ($lstTablesArray as $value)
-        { $cols = $repository2->listColumns(    $value);
+        foreach ($dataset->getDatasetTables() as $tab)
+
+        { $cols = $repository2->listColumns(   $tab->getTableName());
             $colsArray = [];
             foreach ($cols as $col){
                 array_push($colsArray, $col["COLUMN_NAME"]);
             }
-            $tab = array("Tab" => $value , "cols" => $colsArray);
+            $tab = array("Tab" => $tab->getTableName() , "cols" => $colsArray);
 
             array_push($array, $tab);
         }
@@ -271,74 +293,53 @@ class DatasetController extends AbstractController
 
         $tab1 = $request->get('tab1');
         $tab1Cols = $request->get('tab1Cols');
+        $tab1Agreg =  $request->get('tab1Agreg');
         $tab1JoinCol = $request->get('tab1JoinCol');
 
         $tab2 = $request->get('tab2');
         $tab2Cols = $request->get('tab2Cols');
+        $tab2Agreg =  $request->get('tab2Agreg');
         $tab2JoinCol = $request->get('tab2JoinCol');
 
-        $queryTab1 = "";
-        for ($i = 0; $i < count(json_decode($tab1Cols)); $i++){
-            $queryTab1 = $queryTab1 . $tab1 . "." . json_decode($tab1Cols)[$i] . "," ;
-        }
 
-        $queryTab2 = "";
-        for ($i = 0; $i < count(json_decode($tab2Cols)); $i++){
-            $queryTab2 = $queryTab2 . $tab2 . "." . json_decode($tab2Cols)[$i] . "," ;
-        }
-
-        $queryCols = $queryTab1 . substr($queryTab2, 0, -1);
-
-        $queryCols = $tab1. "." . $tab1JoinCol."," .$queryCols ;
-
-
-        $repository = $this->getDoctrine()->getRepository(Dataset::class);
         $entityManager = $this->getDoctrine()->getManager();
+        $repository0 = $this->getDoctrine()->getRepository(DatasetTables::class);
+        $dataset = $repository0->findOneBy(['id' => $dataset]);
+        $repository = $this->getDoctrine()->getRepository(DatasetTables::class);
+        $tab1 = $repository->findOneBy(['table_name' => $tab1,
+                                    'id_dataset' => $dataset]);
+
+        $tab1->setCleJointure($tab1JoinCol);
+        $entityManager->persist($tab1);
+        $entityManager->flush();
+
+        $repository = $this->getDoctrine()->getRepository(DatasetTables::class);
+        $tab2 = $repository->findOneBy(['table_name' => $tab2,
+                             'id_dataset' => $dataset]);
+        $tab2->setCleJointure($tab2JoinCol);
+        $entityManager->persist($tab2);
+        $entityManager->flush();
 
 
-
-        ////////////////////////////////////////////////////////////////
-        $lst = $repository->merge($tab1 , $tab2 , $queryCols , $tab1JoinCol , $tab2JoinCol );
-        // $lst = $repository->findAll();
-        ///////////////////////////////////////////////////////////////////////////
-
-        $lst = $repository->findByName( $dataset ); /////////////////////////2nd par : table
-        // $lst = $repository->findAll();
-        json_encode($lst);
-
-        $encoders = [new JsonEncoder()];
-
-
-        $normalizers = [new ObjectNormalizer()];
-
-        $serializer = new Serializer($normalizers, $encoders);
-
-        $jsonContent = $serializer->serialize($lst, 'json', [
-            'circular_reference_handler' => function ($object) {
-                return $object->getId();
-            }
-        ]);
-
-
-        $response = new Response($jsonContent);
-        $response->headers->set('Content-Type', 'application/json');
-        $parametersAsArray = [];
-        if ($content = $response->getContent()) {
-            $parametersAsArray = json_decode($content, true);
+        for ($i = 0; $i < count(json_decode($tab1Cols)); $i++){
+            $field = new DatasetTablesFields();
+            $field->setIdDatasetTable($tab1);
+            $field->setLabel(json_decode($tab1Cols)[$i]);
+            $field->setAgregation(json_decode($tab1Agreg)[$i]);
+            $entityManager->persist($field);
+            $entityManager->flush();
         }
 
-        $tables = $parametersAsArray[0]['tables'];
-        $tablesArray = json_decode($tables, true);
-
-
-        if (empty($tablesArray) ) {
-            $tablesArray = array();
+        for ($i = 0; $i < count(json_decode($tab2Cols)); $i++){
+            $field = new DatasetTablesFields();
+            $field->setIdDatasetTable($tab2);
+            $field->setLabel(json_decode($tab2Cols)[$i]);
+            $field->setAgregation(json_decode($tab2Agreg)[$i]);
+            $entityManager->persist($field);
+            $entityManager->flush();
         }
-        array_push($tablesArray, $tab1."_".$tab2);
-        $lst = $repository->addToDataset( $dataset , json_encode($tablesArray));
 
-        ////////////////////////// parrsing
-        json_encode($lst);
+        json_encode("done");
 
         $encoders = [new JsonEncoder()];
 
@@ -346,7 +347,7 @@ class DatasetController extends AbstractController
 
         $serializer = new Serializer($normalizers, $encoders);
 
-        $jsonContent = $serializer->serialize($lst, 'json', [
+        $jsonContent = $serializer->serialize("done", 'json', [
             'circular_reference_handler' => function ($object) {
                 return $object->getId();
             }
@@ -363,16 +364,6 @@ class DatasetController extends AbstractController
 
 
 
-     /*  dump("tab1   " . $tab1);
-        dump("tab1Cols   " . $tab1Cols);
-        dump("tab1JoinCol   " . $tab1JoinCol);
-
-        dump("tab2   " . $tab2);
-        dump("tab2Cols   " . $tab2Cols);
-        dump("tab2JoinCol   " . $tab2JoinCol);
-
-
-        die();*/
     }
 
 

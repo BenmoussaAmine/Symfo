@@ -2,13 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="db13d4e0-4fc2-43df-ab19-4feaf1f9a988" name="Default Changelist" comment="map + user 2">
+      <change afterPath="$PROJECT_DIR$/migrations/Version20210526115230.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/Version20210526122824.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/DatasetTables.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/DatasetTablesFields.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Repository/DatasetTablesFieldsRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Repository/DatasetTablesRepository.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/DatasetController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/DatasetController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/DatasetRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/DatasetRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dashboard/map.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dashboard/map2.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dashboard/powerbi.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Dataset.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Dataset.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/dataset/config.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dataset/config.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/dataset/create.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dataset/create.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/dataset/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dataset/index.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -261,7 +265,8 @@
       <workItem from="1621649329179" duration="1432000" />
       <workItem from="1621652617214" duration="30699000" />
       <workItem from="1621722876796" duration="2208000" />
-      <workItem from="1621725138386" duration="34784000" />
+      <workItem from="1621725138386" duration="35342000" />
+      <workItem from="1622015715591" duration="19407000" />
     </task>
     <task id="LOCAL-00001" summary="rest + table/column names">
       <created>1619933333097</created>

@@ -158,8 +158,6 @@
         $("#btnAdd").click( function()
             {
 
-
-
                 var t = $('#inputId').val()
 
                 if ( t == ""){
@@ -192,6 +190,7 @@
                 $.ajax({
                     type: "POST",
                     url: urlAPI,
+
                     // The key needs to match your method's input parameter (case-sensitive).
                     data: JSON.stringify({ Markers: "az" }),
                     contentType: "application/json; charset=utf-8",
@@ -203,7 +202,6 @@
                         document.getElementById('alertName').className  = ('label danger');
                     }
                 });
-
 
             }
         );
