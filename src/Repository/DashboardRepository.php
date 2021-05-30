@@ -124,6 +124,23 @@ WHERE table_schema = 'symfo' AND table_name <> 'doctrine_migration_versions' AND
         return $stmt->fetchAllAssociative();
     }
 
+    public function barChartDataset( $dimension ,  $mesure , $dimTab , $mesTab , $dimJoin , $mesJoin ) {
+
+        $conn = $this->getEntityManager()->getConnection();
+
+
+        $sql = "SELECT  d.".$dimension." , m.".$mesure." 
+FROM
+".$dimTab." d , ".$mesTab." m
+where d.".$dimJoin." = m.".$mesJoin."
+GROUP BY
+d.".$dimension."";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+
     public function barChartQuery2( $tab ,  $col1 , $col2 , $query) {
 
         $conn = $this->getEntityManager()->getConnection();
@@ -133,6 +150,23 @@ WHERE table_schema = 'symfo' AND table_name <> 'doctrine_migration_versions' AND
        ".$query."
 from ".$tab."
 group by ".$col2." order by ".$col2." asc;";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function barChartDataset2( $dimension ,  $mesure , $dimTab , $mesTab , $dimJoin , $mesJoin , $query) {
+
+        $conn = $this->getEntityManager()->getConnection();
+
+
+        $sql = "select d.".$dimension.",
+      ".$query."
+FROM
+".$dimTab." d , ".$mesTab." m
+where d.".$dimJoin." = m.".$mesJoin."
+GROUP BY
+d.".$dimension." order by d.".$dimension." asc;";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAllAssociative();
@@ -153,6 +187,24 @@ group by ".$col2." order by ".$col2." asc;";
         $stmt->execute();
         return $stmt->fetchAllAssociative();
     }
+
+    public function lineChartDataset( $dimension ,  $mesure , $dimTab , $mesTab , $dimJoin , $mesJoin ) {
+
+        $conn = $this->getEntityManager()->getConnection();
+
+
+        $sql = "SELECT  d.".$dimension." , m.".$mesure." 
+FROM
+".$dimTab." d , ".$mesTab." m
+where d.".$dimJoin." = m.".$mesJoin."
+GROUP BY
+d.".$dimension."";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+
     public function getUniques( $tab ,  $col1  ) {
 
         $conn = $this->getEntityManager()->getConnection();
@@ -162,6 +214,73 @@ group by ".$col2." order by ".$col2." asc;";
 FROM ".$tab.";";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+
+
+    public function getDataset(  ) {
+
+        $conn = $this->getEntityManager()->getConnection();
+
+
+        $sql = "SELECT * FROM dataset;";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAllAssociative();
+    }
+    public function getDimensions( $dataset) {
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT label FROM symfo.dataset_tables_fields f , symfo.dataset_tables t , symfo.dataset d
+where f.id_dataset_table_id = t.id 
+and t.id_dataset_id = d.id
+and d.nom = :dataset
+and f.agregation = "Dimension"';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['dataset' => $dataset]);
+        return $stmt->fetchAllAssociative();
+    }
+
+
+    public function getMesures( $dataset) {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT label FROM symfo.dataset_tables_fields f , symfo.dataset_tables t , symfo.dataset d
+where f.id_dataset_table_id = t.id 
+and t.id_dataset_id = d.id
+and d.nom = :dataset
+and f.agregation = "Mesure"';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['dataset' => $dataset]);
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function getTable( $dataset , $colName) {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'select table_name 
+from symfo.dataset_tables t , symfo.dataset_tables_fields c , symfo.dataset d
+where c.id_dataset_table_id = t.id 
+and  t.id_dataset_id = d.id
+and d.nom= :dataset
+and c.label = :colName ;
+';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['dataset' => $dataset , 'colName' => $colName]);
+        return $stmt->fetchAllAssociative();
+    }
+
+
+    public function getJoinKey( $dataset , $colName) {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'select cle_jointure 
+from symfo.dataset_tables t , symfo.dataset_tables_fields c , symfo.dataset d
+where c.id_dataset_table_id = t.id 
+and  t.id_dataset_id = d.id
+and d.nom= :dataset
+and c.label = :colName ;
+';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['dataset' => $dataset , 'colName' => $colName]);
         return $stmt->fetchAllAssociative();
     }
 

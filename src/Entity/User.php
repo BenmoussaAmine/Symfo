@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -57,6 +59,16 @@ class User implements UserInterface
      * )
      */
     protected $captchaCode;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Chart::class, mappedBy="user")
+     */
+    private $charts;
+
+    public function __construct()
+    {
+        $this->charts = new ArrayCollection();
+    }
 
     public function getCaptchaCode()
     {
@@ -179,5 +191,35 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection|Chart[]
+     */
+    public function getCharts(): Collection
+    {
+        return $this->charts;
+    }
+
+    public function addChart(Chart $chart): self
+    {
+        if (!$this->charts->contains($chart)) {
+            $this->charts[] = $chart;
+            $chart->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChart(Chart $chart): self
+    {
+        if ($this->charts->removeElement($chart)) {
+            // set the owning side to null (unless already changed)
+            if ($chart->getUser() === $this) {
+                $chart->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

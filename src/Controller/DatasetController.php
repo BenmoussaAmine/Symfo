@@ -356,7 +356,6 @@ class DatasetController extends AbstractController
 
         $response = new Response($jsonContent);
 
-        dump($response);
 
         $response->headers->set('Content-Type', 'application/json');
 

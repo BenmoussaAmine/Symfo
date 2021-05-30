@@ -2,18 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="db13d4e0-4fc2-43df-ab19-4feaf1f9a988" name="Default Changelist" comment="map + user 2">
-      <change afterPath="$PROJECT_DIR$/migrations/Version20210526115230.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/migrations/Version20210526122824.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/DatasetTables.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/DatasetTablesFields.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Repository/DatasetTablesFieldsRepository.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Repository/DatasetTablesRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/New WinRAR archive.rar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/Version20210530072354.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/Version20210530075223.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Chart.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Gouvernorat.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Repository/ChartRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Repository/GouvernoratRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/dashboard/addChart.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/dashboard/index2.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/DashboardController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/DatasetController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/DatasetController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Dataset.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Dataset.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dataset/config.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dataset/config.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dataset/create.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dataset/create.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/dataset/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dataset/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/DashboardRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/DashboardRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/dashboard/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard/index.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -266,7 +270,10 @@
       <workItem from="1621652617214" duration="30699000" />
       <workItem from="1621722876796" duration="2208000" />
       <workItem from="1621725138386" duration="35342000" />
-      <workItem from="1622015715591" duration="19407000" />
+      <workItem from="1622015715591" duration="21975000" />
+      <workItem from="1622196852052" duration="17446000" />
+      <workItem from="1622303408533" duration="14289000" />
+      <workItem from="1622358809481" duration="17211000" />
     </task>
     <task id="LOCAL-00001" summary="rest + table/column names">
       <created>1619933333097</created>

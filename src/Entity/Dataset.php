@@ -31,9 +31,15 @@ class Dataset
      */
     private $datasetTables;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Chart::class, mappedBy="dataset")
+     */
+    private $charts;
+
     public function __construct()
     {
         $this->datasetTables = new ArrayCollection();
+        $this->charts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,6 +86,36 @@ class Dataset
             // set the owning side to null (unless already changed)
             if ($datasetTable->getIdDataset() === $this) {
                 $datasetTable->setIdDataset(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Chart[]
+     */
+    public function getCharts(): Collection
+    {
+        return $this->charts;
+    }
+
+    public function addChart(Chart $chart): self
+    {
+        if (!$this->charts->contains($chart)) {
+            $this->charts[] = $chart;
+            $chart->setDataset($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChart(Chart $chart): self
+    {
+        if ($this->charts->removeElement($chart)) {
+            // set the owning side to null (unless already changed)
+            if ($chart->getDataset() === $this) {
+                $chart->setDataset(null);
             }
         }
 

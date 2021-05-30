@@ -65,10 +65,10 @@
 
     <!-- page content -->
     <div class="right_col" role="main">
-        <div class="">
+        <div class="" id ="bodyChart">
             <div class="page-title">
                 <div class="title_left">
-                    <h3>Statistiques</h3>
+                    <h3>Dashboard</h3>
                 </div>
 
                 
@@ -80,11 +80,11 @@
                 <div class="col-md-12 col-sm-12  ">
                     <div class="x_panel">
                         <div class="x_title">
-                            <h2>Statistiques</h2>
+                            <h2>Creation des chartes</h2>
                             <ul class="nav navbar-right panel_toolbox">
                                 <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                 </li>
-                                
+
                                 <li><a class="close-link"><i class="fa fa-close"></i></a>
                                 </li>
                             </ul>
@@ -96,69 +96,26 @@
 
 
                       <!--- end / baaaaarrrr ------------------------------------------------------ -->
-                            <div class="form-group row">
+                            <a href="{{ path('addChartDashboard') }}" class="btn btn-primary">add chart</a>
 
-                                <div id="tabList" class="col-md-6 col-sm-6 ">
-
-
-                                    <select  class="form-control"  >
-                                        <option>Table </option>
-                                    </select>
-
-
-                                </div>
-                                <div id="chartList"  class="col-md-6 col-sm-6 ">
-                                    <select class="form-control"  onchange="showGraph(this.value)">
-                                        <option>Type Chart</option>
-                                        <!--    <option value="Pie Chart">Pie Chart</option>
-                                        <option value="Bar Chart">Bar Chart</option>
-                                          <option value="Line Chart">Line Chart</option> -->
-                                    </select>
-                                </div>
-
-
-
-                            </div>
-
-
-                            <div class="form-group row">
-                                <div  id="col1List" class="col-md-6 col-sm-6 ">
-                                    <div id="cblist">
-
-                                    </div>
-                                </div>
-                                <div id="col2List"  class="col-md-6 col-sm-6 ">
-                                    <select class="form-control">
-                                        <option>Colonne 2</option>
-
-                                    </select>
-                                </div>
-
-
-
-                            </div>
-
-                            <div id="content" class='hidden'>
-
-                            </div>
 
                         </div>
 
-                        <div id="loader" >
 
-                        </div>
 <!----------------------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------------------->
 
 
-
-
-
-                        </div>
                     </div>
+                    </div>
+                <div id="loader" >
+
                 </div>
-            </div>
+                </div>
+
+
+
         </div>
     </div>
     <!-- /page content -->
@@ -174,228 +131,121 @@
         var col1 = "" ;
         var col2 = "" ;
         $(document).ready(function(){
-            document.getElementById("loader").style.display = "none";
+
+
+
+            var base_url = window.location.origin;
+            var urlAPI = base_url+"/api/dashboard/getUserCharts"
+            console.log(urlAPI)
+            $.getJSON(urlAPI, function(data)
+            {
+
+                console.log(data);
+                var data_length = data.length;
+                for (var i = 0; i < data_length; i++) {
+                    var contentId = "content" + i
+                    var loaderId =  "loader" + i
+                    var container = $('#bodyChart');
+                    $('<div class="row"> ' +
+                        '<div class="col-md-12 col-sm-12  ">' +
+                        '<div class="x_panel">' +
+                        '<div class="x_title">' +
+                        '<h2>Chart</h2>' +
+                        '<div class="clearfix"></div>' +
+                        '</div>' +
+                        '<div class="x_content">' +
+                        '<div id="'+contentId+'" class="hidden">' +
+                        '   <div id="'+loaderId+'" > </div>' +
+
+                        '</div>' +
+
+
+
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>').appendTo(container);
+
+
+                    if (data[i]["type"]=="barChart"){
+
+
+                        // chartPie(contentId , data[i]["dataset"]["nom"] , data[i]["dimension"] , data[i]["mesure"] );
+                        chartBar(contentId  , data[i]["dataset"]["nom"] , data[i]["dimension"] , data[i]["mesure"] );
+
+                    } else   if (data[i]["type"]=="pieChart"){
+
+                        // document.getElementById("loader").style.display = "block";
+                        // chartPie(contentId , data[i]["dataset"]["nom"] , data[i]["dimension"] , data[i]["mesure"] );
+                        chartPie(contentId , data[i]["dataset"]["nom"] , data[i]["dimension"] , data[i]["mesure"] );
+
+                    }else   if (data[i]["type"]=="lineChart"){
+
+                        // document.getElementById("loader").style.display = "block";
+                        // chartPie(contentId , data[i]["dataset"]["nom"] , data[i]["dimension"] , data[i]["mesure"] );
+                        chartLine(contentId , data[i]["dataset"]["nom"] , data[i]["dimension"] , data[i]["mesure"] );
+
+                    }
+                }
+
+                  document.getElementById("loader").style.display = "none";
+            })
+
+
+
+
+
+
+        /*    document.getElementById("loader").style.display = "none";
             document.getElementById("col1List").style.visibility = "visible";
            document.getElementById("col2List").style.visibility = "hidden";
             document.getElementById("chartList").style.visibility = "hidden";
-            showTabList();
+            showTabList(); */
         })
-        function showTabList() {
-            document.getElementById("loader").style.display = "none";
-            var base_url = window.location.origin;
-            var urlAPI = base_url+"/dashboard/listTables"
-            $.getJSON( urlAPI, function( data ) {
-
-                //    alert(data);
-                var select = $("<select class=\"form-control\"></select>").attr("id", "tables").attr("onchange", "selectedTables(this.value)");
-                select.append($("<option></option>").attr("value", "").text("Table"));
-                var data_length = data.length;
-                for (var i = 0; i < data_length; i++) {
-                    select.append($("<option></option>").attr("value", data[i]["TABLE_NAME"]).text(data[i]["TABLE_NAME"]));
-                }
-                $("#tabList").html(select);
-
-            });
-        }
-
-        function selectedTables(val) {
-
-            document.getElementById("loader").style.display = "block";
-            if (val=="") {
-                showTabList();
-                document.getElementById("chartList").style.visibility = "hidden";
-                document.getElementById("col1List").style.visibility = "hidden";
-                document.getElementById("col2List").style.visibility = "hidden";
-                document.getElementById("content").style.visibility = "hidden";
-                return;
-            } else {
-                document.getElementById("col2List").style.visibility = "hidden";
-                document.getElementById("chartList").style.visibility = "hidden";
-                document.getElementById("content").style.visibility = "hidden";
-                tab = val ;
-                nbChecked = 0 ;
-                showCol1List(val);
-            }
 
 
-        }
-
-        function showCol1List(val) {
-
-            document.getElementById("col1List").style.visibility = "visible";
-            document.getElementById("loader").style.display = "none";
-            var base_url = window.location.origin;
-            var urlAPI = base_url+"/dashboard/getColumns?tab=" + val
-            $.getJSON( urlAPI, function( data ) {
-             /*   var select = $("<select class=\"form-control\"></select>").attr("id", "tables").attr("onchange", "selectedCol1(this.value)");
-                select.append($("<option></option>").attr("value", "").text("Colonne 1"));
-                var data_length = data.length; */
-
-                var container = $('#col1List');
-                $("#col1List").html("");
-                var inputs = container.find('input');
-                for (var i = 0; i < data.length; i++) {
-
-                    lib = "    " + data[i]["COLUMN_NAME"];
-                    $('<input />', { type: 'checkbox', id: data[i]["COLUMN_NAME"], value: data[i]["COLUMN_NAME"] , class:"flat" , onclick:'checkboxChange(this);' }).appendTo(container);
-
-                    $('<label />', { 'for': data[i]["COLUMN_NAME"], text:data[i]["COLUMN_NAME"] , style:'padding-left:20px'}).appendTo(container);
-                    $('<br>').appendTo(container);
-
-                }
-               // $("#col1List").html(select);
-            });
-        }
-function checkboxChange(cb){
-            if (cb.checked == false){
-                nbChecked = nbChecked - 1 ;
-                if (nbChecked == 0) {
-                    document.getElementById("chartList").style.visibility = "hidden";
-                }
-            } else {
-                if (nbChecked==0){
-                    col1 = cb.value;
-                    nbChecked = nbChecked + 1 ;
-                } else if (nbChecked==1){
-                    col2 = cb.value;
-                    nbChecked = nbChecked + 1 ;
-                } else {
-                    nbChecked = nbChecked + 1 ;
-                    document.getElementById("chartList").style.visibility = "hidden";
-                    document.getElementById("content").style.visibility = "hidden";
-                    alert("Maximum 2 colonnes à selectionner ");
-                }
-            }
-
-            if (nbChecked == 1 ) {
-                document.getElementById("chartList").style.visibility = "visible";
-                document.getElementById("content").style.visibility = "hidden";
-                showPieChartList();
-            } else if (nbChecked == 2){
-                document.getElementById("chartList").style.visibility = "visible";
-                document.getElementById("content").style.visibility = "hidden";
-                showAllChartList();
-            }
-}
-        function selectedCol1(val) {
-            if (val=="") {
-                document.getElementById("chartList").style.visibility = "hidden";
-                document.getElementById("col2List").style.visibility = "hidden";
-                document.getElementById("content").style.visibility = "hidden";
-            } else {
-                document.getElementById("chartList").style.visibility = "visible";
-                document.getElementById("col2List").style.visibility = "visible";
-                document.getElementById("content").style.visibility = "hidden";
-                showCol2List();
-                showPieChartList();
-            };
-        }
 
 
-        function selectedCol2(val) {
-            if (val=="") {
-                document.getElementById("content").style.visibility = "hidden";
-                showPieChartList();
 
-            } else {
-                document.getElementById("content").style.visibility = "hidden";
-              showAllChartList();
-            };
-        }
-
-        function showPieChartList() {
-            var select = $("<select class=\"form-control\"></select>").attr("id", "listChart").attr("onchange", "showGraph(this.value)");
-            select.append($("<option></option>").attr("value", "").text("Chart"));
-            select.append($("<option></option>").attr("value", "Pie Chart").text("Pie Chart"));
-
-
-            $("#chartList").html(select);
-
-        }
-        function showAllChartList() {
-            var select = $("<select class=\"form-control\"></select>").attr("id", "listChart").attr("onchange", "showGraph(this.value)");
-            select.append($("<option></option>").attr("value", "").text("Chart"));
-            select.append($("<option></option>").attr("value", "Pie Chart").text("Pie Chart"));
-            select.append($("<option></option>").attr("value", "Bar Chart").text("Bar Chart"));
-            select.append($("<option></option>").attr("value", "Line Chart").text("Line Chart"));
-
-            $("#chartList").html(select);
-        }
-
-
-        function showCol2List() {
-            var val = $('#tabList').find(":selected").text();
-            var base_url = window.location.origin;
-            var urlAPI = base_url+"/dashboard/getColumns?tab=" + val;
-            $.getJSON( urlAPI, function( data ) {
-                var select = $("<select class=\"form-control\"></select>").attr("id", "tables").attr("onchange", "selectedCol2(this.value)");
-                select.append($("<option></option>").attr("value", "").text("Colonne 2"));
-                var data_length = data.length;
-                for (var i = 0; i < data_length; i++) {
-                    select.append($("<option></option>").attr("value", data[i]["COLUMN_NAME"]).text(data[i]["COLUMN_NAME"]));
-                }
-                $("#col2List").html(select);
-            });
-        }
 
     </script>
 
     <script>
 
-        function showGraph(period) {
-            if (period=="") return; // please select - possibly you want something else here
-            if (period=="Pie Chart"){
-                document.getElementById("loader").style.display = "block";
-                chartPie();
-            } else  if (period=="Bar Chart"){
-
-                document.getElementById("loader").style.display = "block";
-              chartBar();
-            } else  if (period=="Line Chart"){
-                document.getElementById("loader").style.display = "block";
-                ChartLine();
-            }
-        }
-        function chartPie() {
+        function chartPie(contentId , dataset , dimension , mesure) {
             const div = document.createElement('div');
 
             div.className = 'row';
 
-            div.innerHTML = `<div id="chartContainer" style="height: 300px; width: 100%;"></div>`;
+            var chartContainer = "chartContainer" + contentId ;
+            div.innerHTML = `<div id=`+chartContainer+` style="height: 300px; width: 100%;"></div>`;
 
-            document.getElementById('content').innerHTML = "";
-            document.getElementById('content').appendChild(div);
-            document.getElementById("content").style.visibility = "visible";
-            PieChartFill();
+            document.getElementById(contentId).innerHTML = "" ;
+            document.getElementById(contentId).appendChild(div);
+            document.getElementById(contentId).style.visibility = "visible";
+            PieChartFill(chartContainer , dataset , dimension , mesure);
 
         }
-        function chartBar() {
+        function chartBar(contentId , dataset , dimension , mesure) {
             const div = document.createElement('div');
 
             div.className = 'row';
-
-            div.innerHTML = `  <div id="chartContainer" style="height: 300px; width: 100%;">
+            var chartContainer = "chartContainer" + contentId ;
+            div.innerHTML = `  <div id=`+chartContainer+` style="height: 300px; width: 100%;">
                                 </div>
                                 <div style="margin-top:16px;color:dimgrey;font-size:9px;font-family: Verdana, Arial, Helvetica, sans-serif;text-decoration:none;">
                                 </div>`;
 
-            document.getElementById('content').innerHTML = "";
-            document.getElementById('content').appendChild(div);
-            document.getElementById("content").style.visibility = "visible";
+            document.getElementById(contentId).innerHTML = "" ;
+            document.getElementById(contentId).appendChild(div);
+            document.getElementById(contentId).style.visibility = "visible";
 
-         /*   var val1 = $('#tabList').find(":selected").text()
-            var col1 = $('#col1List').find(":selected").text()
-            var col2 = $('#col2List').find(":selected").text() */
-
-            val1 = tab;
-            col1 = col1;
-            col2 = col2;
 
 
 
             var uniques = [];
             var base_url = window.location.origin;
-            var urlAPI = base_url+"/dashboard/getUniques?tab="+val1+"&col1="+col1+"" ;
+            var urlAPI = base_url+"/dashboard/getUniquesDataset?dataset="+dataset+"&mesure="+mesure+"" ;
             var myData ;
             $.ajax({
                 type:"GET",
@@ -410,45 +260,49 @@ function checkboxChange(cb){
             });
             console.log(myData);
             for (var i = 0; i < myData.length; i++) {
-                uniques.push(myData[i][col1]);
+                uniques.push(myData[i][mesure]);
             }
             var uniquesQuery = "";
             for (var i = 0; i < uniques.length; i++){
                 var val = uniques[i] ;
                 var cnt_val = "cnt_"+ val;
-                uniquesQuery = uniquesQuery +  "sum("+col1+" = '"+val+"') as "+cnt_val+","
+                uniquesQuery = uniquesQuery +  "sum(d."+mesure+" = '"+val+"') as "+cnt_val+","
                 uniques[i] = cnt_val;
             }
             uniquesQuery = uniquesQuery.slice(0,-1);
-
             if (uniques.length < 10) {
-                document.getElementById("loader").style.display = "block";
-                BarChartFill2(uniques,uniquesQuery);
-            } else {
-                document.getElementById("loader").style.display = "block";
-                BarChartFill();
 
+                // document.getElementById("loader").style.display = "block";
+                BarChartFill2(chartContainer ,uniques,uniquesQuery,dataset , dimension , mesure);
+            } else {
+
+             //   document.getElementById("loader").style.display = "block";
+                BarChartFill(chartContainer , dataset , dimension , mesure);
             }
         }
-        function ChartLine() {
+
+        function chartLine(contentId , dataset , dimension , mesure) {
             const div = document.createElement('div');
 
             div.className = 'row';
 
-            div.innerHTML = `  <div id="chartContainer" style="height: 300px; width: 100%;"></div>`;
+            var chartContainer = "chartContainer" + contentId ;
+            div.innerHTML = `  <div id=`+chartContainer+` style="height: 300px; width: 100%;">
+                                </div>
+                                <div style="margin-top:16px;color:dimgrey;font-size:9px;font-family: Verdana, Arial, Helvetica, sans-serif;text-decoration:none;">
+                                </div>`;
 
-            document.getElementById('content').innerHTML = "";
-            document.getElementById('content').appendChild(div);
-
-            document.getElementById("content").style.visibility = "visible";
-            LineChartFill();
+            document.getElementById(contentId).innerHTML = "" ;
+            document.getElementById(contentId).appendChild(div);
+            document.getElementById(contentId).style.visibility = "visible";
+            LineChartFill(chartContainer , dataset , dimension , mesure);
         }
     </script>
 
 
 <script>
 
-    function BarChartFill(){
+    function BarChartFill(chartContainer , dataset , dimension , mesure){
   /*      var val1 = $('#tabList').find(":selected").text()
         var val2 = $('#col1List').find(":selected").text()
         var val3 = $('#col2List').find(":selected").text() */
@@ -456,10 +310,10 @@ function checkboxChange(cb){
         val2 = col1;
         val3 = col2;
         var dataPoints = [];
-        var chart = new CanvasJS.Chart("chartContainer",
+        var chart = new CanvasJS.Chart(chartContainer,
             {
                 title:{
-                    text:   val2 + " par  "+val3
+                    text:  dimension + " par "+ mesure
                 },
                 data: [
                     {
@@ -472,20 +326,19 @@ function checkboxChange(cb){
                 ]
             });
         var base_url = window.location.origin;
-        var urlAPI = base_url+"/dashboard/chart?tab="+val1+"&col1="+val2+"&col2=" + val3 +"&chart="+ "barChart"  ;
+        var urlAPI = base_url+"/dashboard/datasetChart?chart=barChart&dataset="+dataset+"&dimension="+dimension+"&mesure="+mesure+""  ;
         $.getJSON(urlAPI, function(data)
         {
 
             var data_length = data.length;
             for (var i = 0; i < data_length; i++) {
-                dataPoints.push({label: data[i][val2], y: parseInt(data[i][val3])});
-            }
+                dataPoints.push({label: data[i][dimension], y: parseInt(data[i][mesure])});            }
 
             document.getElementById("loader").style.display = "none";
             chart.render();
         })
     }
-    function BarChartFill2(uniques , uniquesQuery) {
+    function BarChartFill2(chartContainer , uniques , uniquesQuery,dataset , dimension , mesure) {
 
       /*  var val1 = $('#tabList').find(":selected").text()
         var col1 = $('#col1List').find(":selected").text()
@@ -495,10 +348,10 @@ function checkboxChange(cb){
         col1 = col1;
         col2 = col2;
         var dataPoints = [];
-        var chart = new CanvasJS.Chart("chartContainer",
+        var chart = new CanvasJS.Chart(chartContainer,
             {
                 title: {
-                    text: col1 + " par  " + col2
+                    text: dimension + " par "+ mesure
                 },
                 data: [
                     {
@@ -511,9 +364,14 @@ function checkboxChange(cb){
                 ]
             });
         var base_url = window.location.origin;
-        var urlAPI = base_url + "/dashboard/chart?tab=" + val1 + "&col1=" + col1 + "&col2=" + col2 + "&query=" + uniquesQuery +"&chart="+ "barChart2" ;
+      //  var urlAPI = base_url + "/dashboard/chart?tab=" + val1 + "&col1=" + col1 + "&col2=" + col2 + "&query=" + uniquesQuery +"&chart="+ "barChart2" ;
+        var urlAPI = base_url + "/dashboard/datasetChart?chart=barChart2&dataset="+dataset+"&dimension="+dimension+"&mesure="+mesure+"&query=" + uniquesQuery
+
+
         $.getJSON(urlAPI, function (data) {
 
+                console.log("data")
+                console.log(data)
                 myData = data;
                 for (let i = 0; i < uniques.length; i++) {
                     var val = uniques[i];
@@ -527,13 +385,13 @@ function checkboxChange(cb){
                     series2.dataPoints = dataPoints;
                     for (let j = 0; j < myData.length; j++) {
                         var stt = j.toString();
-                        dataPoints.push({label: myData[j][col2], y: parseInt(myData[j][val])});
+                        dataPoints.push({label: myData[j][dimension], y: parseInt(myData[j][val])});
                     }
                     chart.options.data.push(series2);
                 }
 
-            document.getElementById("loader").style.display = "none";
-            chart.render();
+                document.getElementById("loader").style.display = "none";
+                chart.render();
             }
         )
     }
@@ -543,15 +401,15 @@ function checkboxChange(cb){
 
 
 
-    function PieChartFill(){
+    function PieChartFill(chartContainer , dataset , dimension , mesure){
         var val1 = tab ;
         var val2 = col1;
         var dataPoints = [];
-        var chart = new CanvasJS.Chart("chartContainer",
+        var chart = new CanvasJS.Chart(chartContainer ,
             {
                 theme: "light2",
                 title:{
-                    text: "Pourcentages de " + val2
+                    text: "Pourcentages de " + dimension
                 },
                 data: [
                     {
@@ -566,19 +424,19 @@ function checkboxChange(cb){
             });
 
         var base_url = window.location.origin;
-        var urlAPI = base_url+"/dashboard/chart?tab="+val1+"&col1="+ val2+"&chart="+ "pieChart"
+        var urlAPI = base_url+"/dashboard/datasetChart?chart=pieChart&dataset="+dataset+"&dimension="+dimension+"&mesure=null"
         $.getJSON(urlAPI, function(data)
         {
             var data_length = data.length;
             for (var i = 0; i < data_length; i++) {
-                dataPoints.push({indexLabel: data[i][val2], y: parseInt(data[i]["cnt"])});
+                dataPoints.push({indexLabel: data[i][dimension], y: parseInt(data[i]["cnt"])});
             }
 
             document.getElementById("loader").style.display = "none";
         chart.render();
     })
     }
-    function LineChartFill(){
+    function LineChartFill(chartContainer , dataset , dimension , mesure){
    /*     var val1 = $('#tabList').find(":selected").text()
         var val2 = $('#col1List').find(":selected").text()
         var val3 = $('#col2List').find(":selected").text() */
@@ -587,11 +445,11 @@ function checkboxChange(cb){
         val3 = col2;
         var dataPoints = [];
 
-        var chart = new CanvasJS.Chart("chartContainer",
+        var chart = new CanvasJS.Chart(chartContainer,
             {
 
                 title:{
-                    text: val2 + " par "+ val3
+                    text: dimension + " par "+ mesure
                 },
                 data: [
                     {
@@ -603,17 +461,13 @@ function checkboxChange(cb){
     });
 
         var base_url = window.location.origin;
-         var urlAPI = base_url+"/dashboard/chart?tab="+val1+"&col1="+val2+"&col2=" + val3 +"&chart="+ "lineChart" ;
+        var urlAPI = base_url+"/dashboard/datasetChart?chart=lineChart&dataset="+dataset+"&dimension="+dimension+"&mesure="+mesure+""  ;
         $.getJSON(urlAPI, function(data) {
             var data_length = data.length;
             for (var i = 0; i < data_length; i++) {
-                $year = data[i][val3].substring(0, 4);
 
-                $month = data[i][val3].substring(6, 7);
-
-                $day = data[i][val3].substring(9, 10);
               /*  dataPoints.push({label: new Date(parseInt($year), parseInt($month) - 1, parseInt($day)), y: parseInt(data[i][val2])});*/
-                  dataPoints.push({label: data[i][val3], y: parseInt(data[i][val2])});
+                dataPoints.push({label: data[i][dimension], y: parseInt(data[i][mesure])});
 
 
             }
