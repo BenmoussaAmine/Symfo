@@ -176,22 +176,15 @@
                                                 </td>
                                                 <td>
 
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-secondary dropdown-toggle"
-                                                                data-toggle="dropdown"
-                                                                aria-haspopup="true" aria-expanded="false">
-                                                            Action
-                                                        </button>
-                                                        /
-                                                        <div class="dropdown-menu">
+
+                                                    <a class="btn btn-outline-success" href="{{ path('configDataset', {dataset: dataset.id}) }}" data-value="" data-toggle="tooltip" data-placement="top" title="Configurer"><i class="fa fa-cogs"></i></a>
+                                                    <button type="submit" class="btn btn-outline-warning " value='{{ dataset.id }}' onclick='btnReset(this)' data-toggle="tooltip" data-placement="top" title="Reinitialiser"><i class="fa fa-refresh"></i></button>
+
+                                                    <button type="submit" class="btn btn-outline-danger " value='{{ dataset.id }}' onclick='btnDelete(this)' data-toggle="tooltip" data-placement="top" title="Supprimer"><i class="fa fa-minus-circle"></i></button>
 
 
-                                                            <a class="dropdown-item revoke" href="{{ path('configDataset', {dataset: dataset.id}) }}" data-value="">Configurer</a>
-                                                            <a class="dropdown-item desactive" href="#" data-value="">Supprimer</a>
 
 
-                                                        </div>
-                                                    </div>
                                                 </td>
 
                                             </tr>
@@ -264,7 +257,74 @@
 
 
         });
+        function btnReset(objButton){
+            var base_url = window.location.origin;
+            var urlAPI = base_url+"/api/dataset/reset?dataset=" + objButton.value
+            $.ajax({
+                type: "POST",
+                url: urlAPI,
+                success: function(data){
+                    Swal.fire(
+                        'Good job!',
+                        'Dataset réinitialisé',
+                        'success'
+                    ) ;
+                    window.location.reload();
+                    document.getElementById("loader").style.display = "none";
 
+                } ,
+                error: function(errMsg) {
+                    Swal.fire(
+                        'Error!',
+                        'Dataset non réinitialisé',
+                        'error'
+                    ) ;
+                    document.getElementById("loader").style.display = "none";
+                    document.getElementById("btnClear").style.visibility = "visible";
+                },
+            });
+        }
+        function btnDelete(objButton){
+
+            var base_url = window.location.origin;
+            var urlAPI = base_url+"/api/dataset/delete?dataset=" + objButton.value
+
+            swal({
+                title: 'Êtes-vous sur?',
+                text: 'Dataset sera supprimé!',
+                icon: 'warning',
+                buttons: ["Annuler", "Confirmer!"],
+            }).then(function(value) {
+                if (value) {
+                    $.ajax({
+                        type: "POST",
+                        url: urlAPI,
+                        success: function(data){
+                            Swal.fire(
+                                'Good job!',
+                                'Dataset supprimé',
+                                'success'
+                            ) ;
+
+                            document.location.href = String( base_url + "/dataset");
+
+                        } ,
+                        error: function(errMsg) {
+                            Swal.fire(
+                                'Error!',
+                                'Dataset non supprimé',
+                                'error'
+                            ) ;
+                            document.getElementById("loader").style.display = "none";
+                            document.getElementById("btnClear").style.visibility = "visible";
+                        },
+                    });
+                }
+            });
+
+
+
+        }
 
 
 
@@ -286,5 +346,8 @@
     <script src="../vendors/pdfmake/build/pdfmake.min.js"></script>
     <script src="../vendors/pdfmake/build/vfs_fonts.js"></script>
 
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 {% endblock %}

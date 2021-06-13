@@ -33,7 +33,6 @@ class DatasetController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $lst = $repository->findAll($entityManager);
 
-
         return $this->render('dataset/index.html.twig', [
             'datasets' => $lst, 'key' => ""
         ]);
@@ -52,9 +51,14 @@ class DatasetController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
         $lst = $repository->filterByKey($key);
+        $datasets = array();
+        foreach (  $lst as $res) {
+            array_push($datasets, $repository->find($res["id"]));
+        }
+
 
         return $this->render('dataset/index.html.twig', [
-            'datasets' => $lst, 'key' => $key
+            'datasets' => $datasets, 'key' => $key
         ]);
 
     }
@@ -258,10 +262,8 @@ class DatasetController extends AbstractController
         $repository1 = $this->getDoctrine()->getRepository(Dataset::class);
         $dataset = $repository1->findOneBy(['id' => $request->get("dataset")]);
 
+
         $repository2 = $this->getDoctrine()->getRepository(Dashboard::class);
-
-
-
         $array = [];
         foreach ($dataset->getDatasetTables() as $tab)
 
@@ -274,14 +276,13 @@ class DatasetController extends AbstractController
 
             array_push($array, $tab);
         }
-
-
-
         return $this->render('dataset/config.html.twig', [
-            'tabs' => $array,
+            'tabs' => $array, 'dataset' =>$dataset
         ]);
 
     }
+
+
 
     /**
      * @Route("/api/dataset/config", name="apiConfigDataset")
@@ -289,7 +290,12 @@ class DatasetController extends AbstractController
     public function apiConfigDataset(Request $request): Response
     {
         $dataset = $request->get('dataset');
+        //////////////////
 
+        $repository = $this->getDoctrine()->getRepository(Dataset::class);
+        $lst = $repository->reset($request->get("dataset"));
+
+        //////////////////////////////
 
         $tab1 = $request->get('tab1');
         $tab1Cols = $request->get('tab1Cols');
@@ -304,7 +310,7 @@ class DatasetController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
         $repository0 = $this->getDoctrine()->getRepository(DatasetTables::class);
-        $dataset = $repository0->findOneBy(['id' => $dataset]);
+     //   $dataset = $repository0->findOneBy(['id' => $dataset]);
         $repository = $this->getDoctrine()->getRepository(DatasetTables::class);
         $tab1 = $repository->findOneBy(['table_name' => $tab1,
                                     'id_dataset' => $dataset]);
@@ -360,6 +366,134 @@ class DatasetController extends AbstractController
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
+
+    }
+
+
+    // API  :   http://127.0.0.1:8000/api/dataset/show?dataset=11
+
+    /**
+     * @Route("/api/dataset/show", name="apiShowConfigDataset")
+     */
+    public function showConfigDataset(Request $request)
+    {
+
+        $dataset = $request->get('dataset') ;
+
+
+        $repository = $this->getDoctrine()->getRepository(Dataset::class);
+        $lst = $repository->show($dataset);
+
+
+
+        json_encode($lst);
+
+        $encoders = [new JsonEncoder()];
+
+        $normalizers = [new ObjectNormalizer()];
+
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $jsonContent = $serializer->serialize($lst, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+
+        $response = new Response($jsonContent);
+
+        dump($response);
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+
+
+
+
+    }
+
+
+    /**
+     * @Route("/api/dataset/reset", name="apiResetDataset")
+     */
+    public function resetDataset(Request $request)
+    {
+
+        $dataset = $request->get('dataset') ;
+
+
+        $repository = $this->getDoctrine()->getRepository(Dataset::class);
+        $lst = $repository->reset($dataset);
+
+
+        json_encode($lst);
+
+        $encoders = [new JsonEncoder()];
+
+        $normalizers = [new ObjectNormalizer()];
+
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $jsonContent = $serializer->serialize($lst, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+
+        $response = new Response($jsonContent);
+
+        dump($response);
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+
+
+
+
+    }
+
+
+
+    /**
+     * @Route("/api/dataset/delete", name="apiDeleteDataset")
+     */
+    public function deleteDataset(Request $request)
+    {
+
+        $dataset = $request->get('dataset') ;
+
+
+        $repository = $this->getDoctrine()->getRepository(Dataset::class);
+        $lst = $repository->delete($dataset);
+
+
+        json_encode($lst);
+
+        $encoders = [new JsonEncoder()];
+
+        $normalizers = [new ObjectNormalizer()];
+
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $jsonContent = $serializer->serialize($lst, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+
+
+        $response = new Response($jsonContent);
+
+        dump($response);
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+
 
 
 

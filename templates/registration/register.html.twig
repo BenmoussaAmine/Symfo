@@ -21,6 +21,20 @@
 
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
+
+    <style>
+        .label {
+            color: white;
+            padding: 8px;
+            font-family: Arial;
+        }
+        .success {background-color: #04AA6D;} /* Green */
+        .info {background-color: #2196F3;} /* Blue */
+        .warning {background-color: #ff9800;} /* Orange */
+        .danger {background-color: #f44336;} /* Red */
+        .other {background-color: #e7e7e7; color: black;} /* Gray */
+    </style>
+
 </head>
 
 <body class="login">
@@ -32,22 +46,47 @@
         <div class="animate form login_form">
             <section class="login_content">
                     <h1>Create Account</h1>
-                    {% for flashError in app.flashes('verify_email_error') %}
-                        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
-                    {% endfor %}
+                <label id="alert" ></label>
+                <form>
+                        <input type="text" id="nom" class="form-control" placeholder="Nom">
 
-                    {{ form_start(registrationForm) }}
-                    {{ form_row(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
-                {{ form_row(registrationForm.codePostal, {'attr': {'class': 'form-control'}}) }}
-                {{ form_row(registrationForm.gouvernorat, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_row(registrationForm.plainPassword, {'attr': {'class': 'form-control'},
-                        label: 'Password'
-                    }) }}
-                    {{ form_row(registrationForm.agreeTerms) }}
-                {{ form_row(registrationForm.captchaCode) }}
+                        <input type="text" id="prenom" class="form-control" placeholder="Prenom">
 
-                    <button type="submit" class="btn">Register</button>
-                    {{ form_end(registrationForm) }}
+                        <input type="email" id="email" class="form-control" placeholder="Email">
+
+                        <input type="password" id="pwd" class="form-control" placeholder="mot de passe">
+                        <input type="password" id="pwdConf" class="form-control" placeholder="confirmer mot de passe">
+
+
+
+                    <textarea class="form-control" id="adresse" rows="3" placeholder="Adresse" style="margin-top: 10px; margin-bottom: 20px; height: 97px;"></textarea>
+
+                    <input type="text" id="codePostal" class="form-control" placeholder="Code postal">
+
+
+                    <select id="gouvernorat" class="form-control" onchange="gouvChange()">
+                        <option value="">Gouvernorat</option>
+                        {% for gouv in gouvers %}
+                        <option value="{{ gouv.id }}">{{ gouv.NomGouvernorat }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select id="ville" class="form-control" style="margin-top: 20px; margin-bottom: 20px;">
+                        <option value="" >Ville</option>
+
+                    </select>
+
+
+
+
+                    <input type="button" id="btnRegister" value="Register" onclick="msg()">
+                </form>
+
+
+
+
+
+
 
                     <div class="clearfix"></div>
 
@@ -73,9 +112,130 @@
 </html>
 
 
+{% block js %}
+<script>
+    function msg(){
+        var nom = document.getElementById('nom').value;
+        var prenom = document.getElementById('prenom').value ;
+        var email = document.getElementById('email').value ;
+        var password = document.getElementById('pwd').value ;
+        var passwordConf = document.getElementById('pwdConf').value ;
+        var adresse = document.getElementById('adresse').value ;
+        var codePostal = document.getElementById('codePostal').value ;
+        var gouv = document.getElementById("gouvernorat").value;
+        var ville = document.getElementById("ville").value;
+        if(nom === ""){
+            document.getElementById('alert').innerHTML = 'nom doit etre no null';
+            document.getElementById('alert').className  = ('label danger');
+            return
+        }
+        if(prenom === ""){
+            document.getElementById('alert').innerHTML = 'prenom doit etre no null';
+            document.getElementById('alert').className  = ('label danger');
+            return
+        }
+        if(ValidateEmail(email)  === false){
+            document.getElementById('alert').innerHTML = 'email non valid';
+            document.getElementById('alert').className  = ('label danger');
+            return
+        }
+        if(password.length < 6){
+            document.getElementById('alert').innerHTML = 'le mot de passe doit comprendre au moins 6 caractères';
+            document.getElementById('alert').className  = ('label danger');
+            return
+        }
+
+        if(password !== passwordConf ){
+            document.getElementById('alert').innerHTML = 'la confirmation du mot de passe ne correspond pas';
+            document.getElementById('alert').className  = ('label danger');
+            return
+        }
+
+        if(adresse ==="" ){
+            document.getElementById('alert').innerHTML = "l\'adresse doit etre non null";
+            document.getElementById('alert').className  = ('label danger');
+            return
+        }
+        var itIsNumber = /^\d{4}$/.test(codePostal)
+        if(itIsNumber === false){
+            document.getElementById('alert').innerHTML = "verifiez votre code postal";
+            document.getElementById('alert').className  = ('label danger');
+            return
+        }
 
 
 
+        if(gouv === ""){
+            document.getElementById('alert').innerHTML = "verifiez votre gouvernorat";
+            document.getElementById('alert').className  = ('label danger');
+            return
+        }
+        if(ville === ""){
+            document.getElementById('alert').innerHTML = "verifiez votre ville";
+            document.getElementById('alert').className  = ('label danger');
+            return
+        }
+        document.getElementById('alert').innerHTML = "";
+        document.getElementById('alert').className  = ('');
+
+
+        var base_url = window.location.origin;
+        var urlAPI = base_url+"/api/register?nom="+nom+"&prenom="+prenom+"&email="+email+"&password="+password+
+            "&adresse="+adresse + "&codePostal=" + codePostal + "&gouv=" + gouv + "&ville=" + ville
+        console.log(urlAPI)
+
+        $.ajax({
+            type: "POST",
+            url: urlAPI,
+            success: function(data){
+                Swal.fire(
+                    'Good job!',
+                    'Compte bien créé!',
+                    'success'
+                ) ;
+                document.location.href = String( base_url + "/login");
+            } ,
+            error: function(errMsg) {
+                Swal.fire(
+                    'Error!',
+                    'Mail deja existant!',
+                    'error'
+                ) ;
+            },
+        });
+
+
+
+
+    }
+
+    function gouvChange(){
+        var x = document.getElementById("gouvernorat").value;
+        var base_url = window.location.origin;
+        var urlAPI = base_url+"/api/register/villes?gouv=" + x
+        $.getJSON( urlAPI, function( data ) {
+            $('#ville').html("")
+            $('#ville').append(new Option("Ville", ""));
+            console.log(data)
+            for (var i = 0; i < data.length; i++) {
+                $('#ville').append(new Option(data[i]["nomVille"], data[i]["id"]));
+            }
+
+        });
+    }
+
+    function ValidateEmail(mail)
+    {
+        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail))
+        {
+            return (true)
+        }
+        return (false)
+    }
+</script>
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
 
 
 

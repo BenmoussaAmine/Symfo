@@ -195,9 +195,6 @@
 
                             <label id="alertNotif"></label>
                             <button type="submit" class="btn btn-round btn-success"  id="btnMerge" disabled >Créer jointure</button>
-                            <button type="submit" class="btn btn-outline-danger float-right"  id="btnDelete"  >Supprimer</button>
-                            <button type="submit" class="btn btn-outline-warning float-right"  id="btnReset"  >Réinitialiser</button>
-
                             <div class="container-fluid">
                                 <div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2">
 
@@ -269,16 +266,6 @@
         const urlParams = new URLSearchParams(queryString);
         const dataset = urlParams.get('dataset')
 
-        var tab1 = "";
-        var tab1Cols = [];
-        var tab1Agreg = [];
-        var tab1JoinCol = "" ;
-
-        var tab2 = "";
-        var tab2Cols = [];
-        var tab2Agreg = [];
-        var tab2JoinCol = "" ;
-
         $( document ).ready(function() {
             var base_url = window.location.origin;
             var urlAPI = base_url+"/api/dataset/show?dataset=" + dataset
@@ -286,7 +273,6 @@
             $.ajax({
                 type: "GET",
                 url: urlAPI,
-
                 success: function(data){
 
                     for (var i = 0; i < data.length; i++) {
@@ -298,27 +284,7 @@
                         var element = document.getElementById(joinC);
                         element.checked = true;
 
-
-                        if (tab1 == "" ){
-                            tab1 = data[i]["table_name"]
-                        } else if (tab2 == "" && tab1 != data[i]["table_name"] ){
-                            tab2 = data[i]["table_name"]
-                        }
-
-                        if (tab1 == data[i]["table_name"] ){
-                            tab1JoinCol = data[i]["cle_jointure"] ;
-                            tab1Cols.push(data[i]["label"])
-                            tab1Agreg.push(data[i]["agregation"])
-
-                        } else  if (tab2 == data[i]["table_name"] ){
-                            tab2JoinCol = data[i]["cle_jointure"] ;
-                            tab2Cols.push(data[i]["label"])
-                            tab2Agreg.push(data[i]["agregation"])
-
-                        }
-
                     }
-                    log();
                 } ,
                 error: function(errMsg) {
 
@@ -331,11 +297,25 @@
     </script>
     <script>
 
+        /*
+             document.getElementById('alertNotif').innerHTML = 'Deja selectionner';
+            document.getElementById('alertNotif').className  = ('label warning')
+         */
+        var tab1 = "";
+        var tab1Cols = [];
+        var tab1Agreg = [];
+        var tab1JoinCol = []
+
+        var tab2 = "";
+        var tab2Cols = [];
+        var tab2Agreg = [];
+        var tab2JoinCol = []
 
         function cbCheck(cb) {
             tab = cb.value.substring(0, cb.value.indexOf('@'))
             col = cb.value.substring(cb.value.indexOf('@') + 1, cb.value.indexOf('#'))
             agreg = cb.value.substring(cb.value.indexOf('#') + 1, cb.value.length)
+
 
             if (cb.checked == true) {
                 if (agreg != "J") {
@@ -452,7 +432,7 @@
                             }
                         );
                         tab1 = "";
-                        tab1JoinCol = "";
+                        tab1JoinCol = [];
                         tab1Cols = [];
                         tab1Agreg = [];
                         document.getElementById('alertNotif').innerHTML = '';
@@ -466,7 +446,7 @@
                             }
                         );
                         tab2 = "";
-                        tab2JoinCol = "";
+                        tab2JoinCol = [];
                         tab2Cols = [];
                         tab2Agreg = [];
                         document.getElementById('alertNotif').innerHTML = '';
@@ -490,14 +470,18 @@
             console.log("tab2Cols  = " + tab2Cols)
             console.log("tab1Agreg  = " + tab2Agreg)
             console.log("tab2JoinCol  = " + tab2JoinCol)
+
             if (tab1 != "" && tab1Cols.length != 0  && tab1Agreg.length != 0 && tab1JoinCol.length != 0
-            && tab2 != "" && tab2Cols.length != 0  && tab2Agreg.length != 0 && tab2JoinCol.length != 0  ) {
+                && tab2 != "" && tab2Cols.length != 0  && tab2Agreg.length != 0 && tab2JoinCol.length != 0  ) {
+
+
                 var element = document.getElementById("btnMerge");
                 element.disabled = false;
             } else {
                 var element = document.getElementById("btnMerge");
                 element.disabled = true;
             }
+
         }
         $("#btnMerge").click( function()
         {     var base_url = window.location.origin;
@@ -512,7 +496,8 @@
                         'Table Jointure créer!',
                         'success'
                     ) ;
-                    document.location.href = String( base_url + "/dataset");
+                    window.location.reload();
+                    document.getElementById("loader").style.display = "none";
                 } ,
                 error: function(errMsg) {
                     Swal.fire(
@@ -524,66 +509,12 @@
                     document.getElementById("btnClear").style.visibility = "visible";
                 },
             });
-            })
 
-        $("#btnReset").click( function()
-        {
 
-            var base_url = window.location.origin;
-            var urlAPI = base_url+"/api/dataset/reset?dataset=" + dataset
-            $.ajax({
-                type: "POST",
-                url: urlAPI,
-                success: function(data){
-                    Swal.fire(
-                        'Good job!',
-                        'Dataset réinitialisé',
-                        'success'
-                    ) ;
-                    window.location.reload();
 
-                } ,
-                error: function(errMsg) {
-                    Swal.fire(
-                        'Error!',
-                        'Dataset non réinitialisé',
-                        'error'
-                    ) ;
-                    document.getElementById("loader").style.display = "none";
-                    document.getElementById("btnClear").style.visibility = "visible";
-                },
-            });
-        });
 
-        $("#btnDelete").click( function()
-        {
-            var base_url = window.location.origin;
-            var urlAPI = base_url+"/api/dataset/delete?dataset=" + dataset
-            $.ajax({
-                type: "POST",
-                url: urlAPI,
-                success: function(data){
-                    Swal.fire(
-                        'Good job!',
-                        'Dataset supprimé',
-                        'success'
-                    ) ;
 
-                    document.location.href = String( base_url + "/dataset");
-
-                } ,
-                error: function(errMsg) {
-                    Swal.fire(
-                        'Error!',
-                        'Dataset non supprimé',
-                        'error'
-                    ) ;
-                    document.getElementById("loader").style.display = "none";
-                    document.getElementById("btnClear").style.visibility = "visible";
-                },
-            });
-        });
-
+        })
     </script>
 
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

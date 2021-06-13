@@ -64,7 +64,7 @@ class DatasetRepository extends ServiceEntityRepository
     public function filterByKey( $key ) {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = "SELECT * FROM dataset WHERE nom like '%".$key."%'       ";
+        $sql = " SELECT * FROM dataset WHERE nom like '%".$key."%'       ";
         $stmt = $conn->prepare($sql);
         $stmt->execute([]);
 
@@ -75,6 +75,7 @@ class DatasetRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = "SELECT tables FROM dataset where nom = '".$dataset."'";
+
         $stmt = $conn->prepare($sql);
         $stmt->execute([]);
 
@@ -97,6 +98,79 @@ class DatasetRepository extends ServiceEntityRepository
 
         return $stmt->fetchAllAssociative();
     }
+
+    public function show( $dataset) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = "select * from dataset_tables_fields f , dataset_tables t , dataset d 
+where f.id_dataset_table_id = t.id and t.id_dataset_id = d.id and d.id = ".$dataset." ";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function reset( $dataset) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = "DELETE
+FROM dataset_tables_fields
+WHERE id_dataset_table_id IN
+(
+    SELECT id
+    FROM dataset_tables
+    WHERE id_dataset_id like ".$dataset."
+) ;
+
+
+
+";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAllAssociative();
+
+    }
+
+
+    public function delete( $dataset) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = "DELETE
+FROM dataset_tables_fields
+WHERE id_dataset_table_id IN
+(
+    SELECT id
+    FROM dataset_tables
+    WHERE id_dataset_id like ".$dataset."
+) ;
+
+SET FOREIGN_KEY_CHECKS = 0; 
+
+DELETE
+FROM dataset_tables
+WHERE id_dataset_id like ".$dataset."  ;
+
+DELETE
+FROM dataset
+WHERE id like ".$dataset."  ;
+
+SET FOREIGN_KEY_CHECKS = 1; 
+
+
+SET SQL_SAFE_UPDATES = 1;
+
+";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAllAssociative();
+
+    }
+
 
 
 

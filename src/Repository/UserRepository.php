@@ -41,7 +41,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $conn = $this->getEntityManager()->getConnection();
 
 
-        $sql = "UPDATE `user` SET `roles` = '[\"ROLE_USER\"]' WHERE (`id` = ".$id.")";
+        $sql = "UPDATE `user` SET `etat` = 'actif' WHERE (`id` = ".$id.")";
 
         $stmt = $conn->prepare($sql);
         return $stmt->execute();
@@ -52,7 +52,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $conn = $this->getEntityManager()->getConnection();
 
 
-        $sql = "UPDATE `user` SET `roles` = '[\"ROLE_NULL\"]' WHERE (`id` = ".$id.")";
+        $sql = "UPDATE `user` SET `etat` = 'non actif' WHERE (`id` = ".$id.")";
 
         $stmt = $conn->prepare($sql);
         return $stmt->execute();
@@ -106,7 +106,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $stmt->execute();
     }
 
-    public function getCountGov( ) {
+    public function getCountGov2( ) {
 
         $conn = $this->getEntityManager()->getConnection();
 
@@ -137,6 +137,44 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
        sum(gouvernorat = 'Medenine') as cnt_Medenine,
        sum(gouvernorat = 'Tataouine') as cnt_Tataouine
 from symfo.user";
+
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function getCountGov( ) {
+
+        $conn = $this->getEntityManager()->getConnection();
+
+
+        $sql = "select   sum(id_gouvernorat_id = 3) as cnt_Bizerte,
+sum(id_gouvernorat_id = 1) as cnt_Tunis,
+sum(id_gouvernorat_id = 4) as cnt_Beja,
+sum(id_gouvernorat_id = 5) as cnt_Jendouba,
+sum(id_gouvernorat_id = 2) as cnt_Ariana,
+sum(id_gouvernorat_id = 6) as cnt_Manouba,
+sum(id_gouvernorat_id = 7) as cnt_BenArous,
+sum(id_gouvernorat_id = 8) as cnt_Zaghouan,
+sum(id_gouvernorat_id = 9) as cnt_Siliana,
+sum(id_gouvernorat_id = 10) as cnt_Kairouan,
+sum(id_gouvernorat_id = 11) as cnt_LeKef,
+sum(id_gouvernorat_id = 12) as cnt_Nabeul,
+sum(id_gouvernorat_id = 13) as cnt_Kasserine,
+sum(id_gouvernorat_id = 14) as cnt_SidiBouZid,
+sum(id_gouvernorat_id = 15) as cnt_Sousse,
+sum(id_gouvernorat_id = 16) as cnt_Monastir,
+sum(id_gouvernorat_id = 17) as cnt_Mahdia,
+sum(id_gouvernorat_id = 18) as cnt_Sfax,
+sum(id_gouvernorat_id = 19) as cnt_Gafsa,
+sum(id_gouvernorat_id = 20) as cnt_Touzeur,
+sum(id_gouvernorat_id = 21) as cnt_Kebili,
+sum(id_gouvernorat_id = 22) as cnt_Gabes ,
+sum(id_gouvernorat_id = 23) as cnt_Medenine,
+sum(id_gouvernorat_id = 24) as cnt_Tataouine 
+ from adresse";
 
 
         $stmt = $conn->prepare($sql);

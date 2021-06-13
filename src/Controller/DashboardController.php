@@ -688,6 +688,37 @@ class DashboardController extends AbstractController
            return $response;
     }
 
+    /**
+     * @Route("/api/dashboard/deleteChart", name="deleteChart")
+     */
+    public function deleteChart(Request $request)
+    {
+        $user = $this->security->getUser();
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $repository = $this->getDoctrine()->getRepository(Chart::class);
+
+        $chart = $repository->find($request->get('id'));
+
+        $entityManager->remove($chart);
+        $entityManager->flush();
+
+
+        json_encode($chart);
+        $encoders = [new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+        $jsonContent = $serializer->serialize($chart, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+        $response = new Response($jsonContent);
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+
 
 
 

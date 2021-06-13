@@ -2,10 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="db13d4e0-4fc2-43df-ab19-4feaf1f9a988" name="Default Changelist" comment="map + user 2">
+      <change afterPath="$PROJECT_DIR$/migrations/Version20210612134743.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/Version20210612140707.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/Version20210612152904.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/Version20210612212906.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/Version20210612232329.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/Version20210612235555.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Adresse.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Ville.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Repository/AdresseRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Repository/VilleRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/dataset/show.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/AdminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/AdminController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/DashboardController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/DashboardController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/DatasetController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/DatasetController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RegistrationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RegistrationController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Gouvernorat.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Gouvernorat.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/DashboardRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/DashboardRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/DatasetRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/DatasetRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/UserRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/UserRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/users.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/users.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/dashboard/addChart.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard/addChart.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/dashboard/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dashboard/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/dashboard/index2.html.twig" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/dataset/config.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dataset/config.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/dataset/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/dataset/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/registration/register.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/registration/register.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -263,7 +287,8 @@
       <workItem from="1622303408533" duration="14289000" />
       <workItem from="1622358809481" duration="18405000" />
       <workItem from="1623175786514" duration="14106000" />
-      <workItem from="1623262132381" duration="19757000" />
+      <workItem from="1623262132381" duration="70402000" />
+      <workItem from="1623500074952" duration="41427000" />
     </task>
     <task id="LOCAL-00001" summary="rest + table/column names">
       <created>1619933333097</created>

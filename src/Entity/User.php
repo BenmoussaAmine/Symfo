@@ -32,15 +32,8 @@ class User implements UserInterface
 
 
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $codepostal;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=false)
-     */
-    private $gouvernorat;
+
 
     /**
      * @ORM\Column(type="json")
@@ -64,6 +57,26 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity=Chart::class, mappedBy="user")
      */
     private $charts;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $etat;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Adresse::class)
+     */
+    private $idAdresse;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $nom;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $prenom;
 
     public function __construct()
     {
@@ -97,37 +110,11 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCodepostal()
-    {
-        return $this->codepostal;
-    }
 
-    /**
-     * @param mixed $codepostal
-     */
-    public function setCodepostal($codepostal): void
-    {
-        $this->codepostal = $codepostal;
-    }
 
-    /**
-     * @return mixed
-     */
-    public function getGouvernorat()
-    {
-        return $this->gouvernorat;
-    }
 
-    /**
-     * @param mixed $gouvernorat
-     */
-    public function setGouvernorat($gouvernorat): void
-    {
-        $this->gouvernorat = $gouvernorat;
-    }
+
+
 
     /**
      * A visual identifier that represents this user.
@@ -219,6 +206,54 @@ class User implements UserInterface
                 $chart->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEtat(): ?string
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(string $etat): self
+    {
+        $this->etat = $etat;
+
+        return $this;
+    }
+
+    public function getIdAdresse(): ?Adresse
+    {
+        return $this->idAdresse;
+    }
+
+    public function setIdAdresse(?Adresse $idAdresse): self
+    {
+        $this->idAdresse = $idAdresse;
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): self
+    {
+        $this->prenom = $prenom;
 
         return $this;
     }

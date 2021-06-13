@@ -15,31 +15,63 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
 
 class AdminController extends AbstractController
 {
+
+    /**
+     * @var Security
+     */
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
+
 
     /**
      * @Route("/userRedirect", name="userRedirect")
      */
     public function userRedirect(): Response
     {
-        if ($this->isGranted('ROLE_ADMIN')){
-            /*  return   $this->render('page_404.html.twig', [
-        'controller_name' => 'DashboardController',
-    ]);*/
-            return $this->redirectToRoute("utilisateurs");
-        }else if ($this->isGranted('ROLE_USER')){
-            /*  return   $this->render('page_404.html.twig', [
-                    'controller_name' => 'DashboardController',
-                ]);*/
-            return $this->redirectToRoute("dashboard");
-        }else {
-            /*  return   $this->render('page_404.html.twig', [
-        'controller_name' => 'DashboardController',
-    ]);*/
-            return $this->redirectToRoute("logout");
-        }
+        $user = $this->security->getUser();
+       if ($user->getEtat() == "non actif"){
+           return $this->redirectToRoute("app_login");
+       } else {
+           if ($this->isGranted('ROLE_ADMIN')){
+               /*  return   $this->render('page_404.html.twig', [
+           'controller_name' => 'DashboardController',
+       ]);*/
+               return $this->redirectToRoute("utilisateurs");
+           }else if ($this->isGranted('ROLE_USER')){
+               /*  return   $this->render('page_404.html.twig', [
+                       'controller_name' => 'DashboardController',
+                   ]);*/
+               return $this->redirectToRoute("dashboard");
+           }
+
+       }
+
+
+//        if ($this->isGranted('ROLE_ADMIN')){
+//            /*  return   $this->render('page_404.html.twig', [
+//        'controller_name' => 'DashboardController',
+//    ]);*/
+//            return $this->redirectToRoute("utilisateurs");
+//        }else if ($this->isGranted('ROLE_USER')){
+//            /*  return   $this->render('page_404.html.twig', [
+//                    'controller_name' => 'DashboardController',
+//                ]);*/
+//            return $this->redirectToRoute("dashboard");
+//        }else {
+//            /*  return   $this->render('page_404.html.twig', [
+//        'controller_name' => 'DashboardController',
+//    ]);*/
+//            return $this->redirectToRoute("logout");
+//        }
 
     }
 
@@ -60,8 +92,10 @@ class AdminController extends AbstractController
     {
         $repository = $this->getDoctrine()->getRepository(User::class);
 
+
         $entityManager = $this->getDoctrine()->getManager();
         $lst = $repository->findAll($entityManager);
+
         return $this->render('admin/users.html.twig', [
             'users' => $lst,
         ]);

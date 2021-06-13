@@ -84,7 +84,12 @@ class DashboardRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = "SELECT table_name FROM information_schema.tables
-WHERE table_schema = 'symfo' AND table_name <> 'doctrine_migration_versions' AND table_name <> 'user'";
+WHERE table_schema = 'symfo' AND table_name <> 'doctrine_migration_versions' 
+and  table_name <> 'chart'
+and  table_name <> 'dashboard'
+and  table_name <> 'dataset_tables'
+and  table_name <> 'dataset'
+and  table_name <> 'dataset_tables_fields'";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 

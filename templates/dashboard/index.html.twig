@@ -3,62 +3,82 @@
 {% block title %}Hello AssureController!{% endblock %}
 {% block css %}
     <script src="https://code.highcharts.com/highcharts.js"></script>
-<style>
-    /* Center the loader */
-    .disabledbutton {
-        pointer-events: none;
-        opacity: 0.4;
-    }
+    <style>
+        /* Center the loader */
+        .disabledbutton {
+            pointer-events: none;
+            opacity: 0.4;
+        }
 
-    #loader {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        z-index: 1;
-        width: 120px;
-        height: 120px;
-        margin: -76px 0 0 -76px;
-        border: 16px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 16px solid #3498db;
-        -webkit-animation: spin 2s linear infinite;
-        animation: spin 2s linear infinite;
-    }
+        #loader {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 1;
+            width: 120px;
+            height: 120px;
+            margin: -76px 0 0 -76px;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
 
-    @-webkit-keyframes spin {
-        0% { -webkit-transform: rotate(0deg); }
-        100% { -webkit-transform: rotate(360deg); }
-    }
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
-    /* Add animation to "page content" */
-    .animate-bottom {
-        position: relative;
-        -webkit-animation-name: animatebottom;
-        -webkit-animation-duration: 1s;
-        animation-name: animatebottom;
-        animation-duration: 1s
-    }
+        /* Add animation to "page content" */
+        .animate-bottom {
+            position: relative;
+            -webkit-animation-name: animatebottom;
+            -webkit-animation-duration: 1s;
+            animation-name: animatebottom;
+            animation-duration: 1s
+        }
 
-    @-webkit-keyframes animatebottom {
-        from { bottom:-100px; opacity:0 }
-        to { bottom:0px; opacity:1 }
-    }
+        @-webkit-keyframes animatebottom {
+            from {
+                bottom: -100px;
+                opacity: 0
+            }
+            to {
+                bottom: 0px;
+                opacity: 1
+            }
+        }
 
-    @keyframes animatebottom {
-        from{ bottom:-100px; opacity:0 }
-        to{ bottom:0; opacity:1 }
-    }
+        @keyframes animatebottom {
+            from {
+                bottom: -100px;
+                opacity: 0
+            }
+            to {
+                bottom: 0;
+                opacity: 1
+            }
+        }
 
-    #myDiv {
-        display: none;
-        text-align: center;
-    }
-</style>
+        #myDiv {
+            display: none;
+            text-align: center;
+        }
+    </style>
 
 {% endblock %}
 
@@ -66,13 +86,13 @@
 
     <!-- page content -->
     <div class="right_col" role="main">
-        <div class="" id ="bodyChart">
+        <div class="" id="bodyChart">
             <div class="page-title">
                 <div class="title_left">
                     <h3>Dashboard</h3>
                 </div>
 
-                
+
             </div>
 
             <div class="clearfix"></div>
@@ -92,11 +112,10 @@
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_content">
-                      <!--- baaaaarrrr ------------------------------------------------------ -->
+                            <!--- baaaaarrrr ------------------------------------------------------ -->
 
 
-
-                      <!--- end / baaaaarrrr ------------------------------------------------------ -->
+                            <!--- end / baaaaarrrr ------------------------------------------------------ -->
 
 
                             <br>
@@ -106,18 +125,17 @@
                         </div>
 
 
-<!----------------------------------------------------------------------------------------->
-<!----------------------------------------------------------------------------------------->
-<!----------------------------------------------------------------------------------------->
+                        <!----------------------------------------------------------------------------------------->
+                        <!----------------------------------------------------------------------------------------->
+                        <!----------------------------------------------------------------------------------------->
 
 
                     </div>
-                    </div>
-                <div id="loader" >
+                </div>
+                <div id="loader">
 
                 </div>
-                </div>
-
+            </div>
 
 
         </div>
@@ -131,38 +149,41 @@
 {% block js %}
     <script>
         var nbChecked = 0;
-        var tab = "" ;
-        var col1 = "" ;
-        var col2 = "" ;
-        $(document).ready(function(){
-
+        var tab = "";
+        var col1 = "";
+        var col2 = "";
+        $(document).ready(function () {
 
 
             var base_url = window.location.origin;
-            var urlAPI = base_url+"/api/dashboard/getUserCharts"
+            var urlAPI = base_url + "/api/dashboard/getUserCharts"
             console.log(urlAPI)
-            $.getJSON(urlAPI, function(data)
-            {
+            $.getJSON(urlAPI, function (data) {
+//'<a class="btn btn-outline-success float-right"  data-value="" data-toggle="tooltip" data-placement="top" title="Configurer">'+
 
                 console.log(data);
                 var data_length = data.length;
                 for (var i = 0; i < data_length; i++) {
                     var contentId = "content" + i
-                    var loaderId =  "loader" + i
+                    var loaderId = "loader" + i
                     var container = $('#bodyChart');
-                    $('<div class="row"> ' +
+                    var id = data[i]["id"];
+                    $('<div class="row" id="row' + id + '"> ' +
                         '<div class="col-md-12 col-sm-12  ">' +
                         '<div class="x_panel">' +
                         '<div class="x_title">' +
                         '<h2>Chart</h2>' +
+
+                        '<button type="submit" class="btn btn-outline-danger float-right " value="' + id + '" data-toggle="tooltip" data-placement="top" title="Supprimer"  onclick="btnDelete(this)"><i class="fa fa-ban"></i></button>' +
+                        '<button type="submit" class="btn btn-outline-warning float-right "  value="' + id + '" data-toggle="tooltip" data-placement="top" title="Masquer"  onclick="btnMasquer(this)"><i class="fa fa-minus"></i></button>' +
+
                         '<div class="clearfix"></div>' +
                         '</div>' +
                         '<div class="x_content">' +
-                        '<div id="'+contentId+'" class="hidden">' +
-                        '   <div id="'+loaderId+'" > </div>' +
+                        '<div id="' + contentId + '" class="hidden">' +
+                        '   <div id="' + loaderId + '" > </div>' +
 
                         '</div>' +
-
 
 
                         '</div>' +
@@ -171,75 +192,112 @@
                         '</div>').appendTo(container);
 
 
-                    if (data[i]["type"]=="barChart"){
+                    if (data[i]["type"] == "barChart") {
 
 
                         // chartPie(contentId , data[i]["dataset"]["nom"] , data[i]["dimension"] , data[i]["mesure"] );
-                        chartBar(contentId  , data[i]["dataset"]["nom"] , data[i]["dimension"] , data[i]["mesure"] );
+                        chartBar(contentId, data[i]["dataset"]["nom"], data[i]["dimension"], data[i]["mesure"]);
 
-                    } else   if (data[i]["type"]=="pieChart"){
+                    } else if (data[i]["type"] == "pieChart") {
 
                         // document.getElementById("loader").style.display = "block";
                         // chartPie(contentId , data[i]["dataset"]["nom"] , data[i]["dimension"] , data[i]["mesure"] );
-                        chartPie(contentId , data[i]["dataset"]["nom"] , data[i]["dimension"] , data[i]["mesure"] );
+                        chartPie(contentId, data[i]["dataset"]["nom"], data[i]["dimension"], data[i]["mesure"]);
 
-                    }else   if (data[i]["type"]=="lineChart"){
+                    } else if (data[i]["type"] == "lineChart") {
 
                         // document.getElementById("loader").style.display = "block";
                         // chartPie(contentId , data[i]["dataset"]["nom"] , data[i]["dimension"] , data[i]["mesure"] );
-                        chartLine(contentId , data[i]["dataset"]["nom"] , data[i]["dimension"] , data[i]["mesure"] );
+                        chartLine(contentId, data[i]["dataset"]["nom"], data[i]["dimension"], data[i]["mesure"]);
 
                     }
                 }
 
-                  document.getElementById("loader").style.display = "none";
+                document.getElementById("loader").style.display = "none";
             })
 
 
-
-
-
-
-        /*    document.getElementById("loader").style.display = "none";
-            document.getElementById("col1List").style.visibility = "visible";
-           document.getElementById("col2List").style.visibility = "hidden";
-            document.getElementById("chartList").style.visibility = "hidden";
-            showTabList(); */
+            /*    document.getElementById("loader").style.display = "none";
+                document.getElementById("col1List").style.visibility = "visible";
+               document.getElementById("col2List").style.visibility = "hidden";
+                document.getElementById("chartList").style.visibility = "hidden";
+                showTabList(); */
         })
 
+        function btnDelete(objButton) {
 
 
+            var base_url = window.location.origin;
+            var urlAPI = base_url + "/api/dashboard/deleteChart?id=" + objButton.value
+            swal({
+                title: 'Êtes-vous sur?',
+                text: 'Widget sera supprimé!',
+                icon: 'warning',
+                buttons: ["Annuler", "Confirmer!"],
+            }).then(function(value) {
+                if (value) {
+                    $.ajax({
+                        type: "POST",
+                        url: urlAPI,
+                        success: function(data){
+                            Swal.fire(
+                                'Good job!',
+                                'Widget supprimé',
+                                'success'
+                            ) ;
 
+                            document.getElementById("row" + objButton.value).innerHTML = "";
+
+                        } ,
+                        error: function(errMsg) {
+                            Swal.fire(
+                                'Error!',
+                                'Widget non supprimé',
+                                'error'
+                            ) ;
+                            document.getElementById("loader").style.display = "none";
+                            document.getElementById("btnClear").style.visibility = "visible";
+                        },
+                    });
+                }
+            });
+
+
+        }
+
+        function btnMasquer(objButton) {
+
+            document.getElementById("row" + objButton.value).innerHTML = "";
+        }
 
 
     </script>
 
     <script>
 
-        function chartPie(contentId , dataset , dimension , mesure) {
+        function chartPie(contentId, dataset, dimension, mesure) {
             const div = document.createElement('div');
 
             div.className = 'row';
 
-            var chartContainer = "chartContainer" + contentId ;
-            div.innerHTML = `<div id=`+chartContainer+` style="height: 300px; width: 100%;"></div>`;
+            var chartContainer = "chartContainer" + contentId;
+            div.innerHTML = `<div id=` + chartContainer + ` style="height: 300px; width: 100%;"></div>`;
 
-            document.getElementById(contentId).innerHTML = "" ;
+            document.getElementById(contentId).innerHTML = "";
             document.getElementById(contentId).appendChild(div);
             document.getElementById(contentId).style.visibility = "visible";
 
 
             var dataPoints = [];
             var base_url = window.location.origin;
-            var urlAPI = base_url+"/dashboard/datasetChart?chart=pieChart&dataset="+dataset+"&dimension="+dimension+"&mesure=null"
+            var urlAPI = base_url + "/dashboard/datasetChart?chart=pieChart&dataset=" + dataset + "&dimension=" + dimension + "&mesure=null"
             //var urlAPI = base_url+"/dashboard/chart?tab="+val1+"&col1="+ val2+"&chart="+ "pieChart"
             console.log(urlAPI)
-            $.getJSON(urlAPI, function(data)
-            {
+            $.getJSON(urlAPI, function (data) {
                 var data_length = data.length;
                 for (var i = 0; i < data_length; i++) {
                     console.log(data);
-                    dataPoints.push({name:data[i][dimension], y: parseInt(data[i]["cnt"])});
+                    dataPoints.push({name: data[i][dimension], y: parseInt(data[i]["cnt"])});
 
                 }
 
@@ -247,8 +305,6 @@
                 console.log("azaz");
                 console.log(dataPoints[0]);
                 console.log("popihjfdf");
-
-
 
 
                 Highcharts.chart(chartContainer, {
@@ -288,40 +344,37 @@
                 });
 
 
-
             })
 
 
         }
-        function chartBar(contentId , dataset , dimension , mesure) {
+
+        function chartBar(contentId, dataset, dimension, mesure) {
             const div = document.createElement('div');
 
             div.className = 'row';
-            var chartContainer = "chartContainer" + contentId ;
-            div.innerHTML = `  <div id=`+chartContainer+` style="height: 300px; width: 100%;">
+            var chartContainer = "chartContainer" + contentId;
+            div.innerHTML = `  <div id=` + chartContainer + ` style="height: 300px; width: 100%;">
                                 </div>
                                 <div style="margin-top:16px;color:dimgrey;font-size:9px;font-family: Verdana, Arial, Helvetica, sans-serif;text-decoration:none;">
                                 </div>`;
 
-            document.getElementById(contentId).innerHTML = "" ;
+            document.getElementById(contentId).innerHTML = "";
             document.getElementById(contentId).appendChild(div);
             document.getElementById(contentId).style.visibility = "visible";
 
 
-
-
             var uniques = [];
             var base_url = window.location.origin;
-            var urlAPI = base_url+"/dashboard/getUniquesDataset?dataset="+dataset+"&mesure="+mesure+"" ;
-            var myData ;
+            var urlAPI = base_url + "/dashboard/getUniquesDataset?dataset=" + dataset + "&mesure=" + mesure + "";
+            var myData;
             $.ajax({
-                type:"GET",
+                type: "GET",
                 async: false,
                 dataType: "json",
-                data:{name: name},
-                url:urlAPI,
-                success:function(data)
-                {
+                data: {name: name},
+                url: urlAPI,
+                success: function (data) {
                     myData = data;
                 }
             });
@@ -330,48 +383,47 @@
                 uniques.push(myData[i][mesure]);
             }
             var uniquesQuery = "";
-            for (var i = 0; i < uniques.length; i++){
-                var val = uniques[i] ;
-                var cnt_val = "cnt_"+ val;
-                uniquesQuery = uniquesQuery +  "sum(d."+mesure+" = '"+val+"') as "+cnt_val+","
+            for (var i = 0; i < uniques.length; i++) {
+                var val = uniques[i];
+                var cnt_val = "cnt_" + val;
+                uniquesQuery = uniquesQuery + "sum(d." + mesure + " = '" + val + "') as " + cnt_val + ","
                 uniques[i] = cnt_val;
             }
-            uniquesQuery = uniquesQuery.slice(0,-1);
+            uniquesQuery = uniquesQuery.slice(0, -1);
             if (uniques.length < 10) {
 
                 // document.getElementById("loader").style.display = "block";
-                BarChartFill2(chartContainer ,uniques,uniquesQuery,dataset , dimension , mesure);
+                BarChartFill2(chartContainer, uniques, uniquesQuery, dataset, dimension, mesure);
             } else {
 
-             //   document.getElementById("loader").style.display = "block";
-                BarChartFill1(chartContainer , dataset , dimension , mesure);
+                //   document.getElementById("loader").style.display = "block";
+                BarChartFill1(chartContainer, dataset, dimension, mesure);
             }
         }
 
-        function chartLine(contentId , dataset , dimension , mesure) {
+        function chartLine(contentId, dataset, dimension, mesure) {
             const div = document.createElement('div');
 
             div.className = 'row';
 
-            var chartContainer = "chartContainer" + contentId ;
-            div.innerHTML = `  <div id=`+chartContainer+` style="height: 300px; width: 100%;">
+            var chartContainer = "chartContainer" + contentId;
+            div.innerHTML = `  <div id=` + chartContainer + ` style="height: 300px; width: 100%;">
                                 </div>
                                 <div style="margin-top:16px;color:dimgrey;font-size:9px;font-family: Verdana, Arial, Helvetica, sans-serif;text-decoration:none;">
                                 </div>`;
 
-            document.getElementById(contentId).innerHTML = "" ;
+            document.getElementById(contentId).innerHTML = "";
             document.getElementById(contentId).appendChild(div);
             document.getElementById(contentId).style.visibility = "visible";
 
 
             var dataPoints = [];
-            var Dims = [] ;
+            var Dims = [];
             var base_url = window.location.origin;
-            var urlAPI = base_url+"/dashboard/datasetChart?chart=lineChart&dataset="+dataset+"&dimension="+dimension+"&mesure="+mesure+""  ;
+            var urlAPI = base_url + "/dashboard/datasetChart?chart=lineChart&dataset=" + dataset + "&dimension=" + dimension + "&mesure=" + mesure + "";
             //var urlAPI = base_url+"/dashboard/chart?tab="+val1+"&col1="+ val2+"&chart="+ "pieChart"
             console.log(urlAPI)
-            $.getJSON(urlAPI, function(data)
-            {
+            $.getJSON(urlAPI, function (data) {
                 var data_length = data.length;
                 for (var i = 0; i < data_length; i++) {
                     console.log(data);
@@ -383,7 +435,6 @@
                 console.log("azaz");
                 console.log(dataPoints[0]);
                 console.log("popihjfdf");
-
 
 
                 for (var i = 0; i < data.length; i++) {
@@ -424,7 +475,6 @@
                     },
 
 
-
                     series: [{
                         name: mesure,
                         data: dataPoints
@@ -448,7 +498,6 @@
                 });
 
 
-
             })
 
 
@@ -456,306 +505,297 @@
     </script>
 
 
-<script>
+    <script>
 
-    function BarChartFill1(chartContainer , dataset , dimension , mesure){
+        function BarChartFill1(chartContainer, dataset, dimension, mesure) {
 
-        var Dims = [];
-        var Mes = [];
-        var dataPoints = [];
-        var base_url = window.location.origin;
-        var urlAPI = base_url+"/dashboard/datasetChart?chart=barChart&dataset="+dataset+"&dimension="+dimension+"&mesure="+mesure+""
-        //var urlAPI = base_url+"/dashboard/chart?tab="+val1+"&col1="+ val2+"&chart="+ "pieChart"
-        console.log(urlAPI)
-        $.getJSON(urlAPI, function(data)
-        {
-            // var data_length = data.length;
-            /* for (var i = 0; i < data_length; i++) {
-                 console.log(data);
-                 dataPoints.push({name:data[i][dimension], y: parseInt(data[i]["cnt"])});
+            var Dims = [];
+            var Mes = [];
+            var dataPoints = [];
+            var base_url = window.location.origin;
+            var urlAPI = base_url + "/dashboard/datasetChart?chart=barChart&dataset=" + dataset + "&dimension=" + dimension + "&mesure=" + mesure + ""
+            //var urlAPI = base_url+"/dashboard/chart?tab="+val1+"&col1="+ val2+"&chart="+ "pieChart"
+            console.log(urlAPI)
+            $.getJSON(urlAPI, function (data) {
+                // var data_length = data.length;
+                /* for (var i = 0; i < data_length; i++) {
+                     console.log(data);
+                     dataPoints.push({name:data[i][dimension], y: parseInt(data[i]["cnt"])});
 
-             } */
+                 } */
 
-            document.getElementById("loader").style.display = "none";
-            console.log("azaz");
-            console.log(dataPoints[0]);
-            console.log("popihjfdf");
+                document.getElementById("loader").style.display = "none";
+                console.log("azaz");
+                console.log(dataPoints[0]);
+                console.log("popihjfdf");
 
-            for (var i = 0; i < data.length; i++) {
+                for (var i = 0; i < data.length; i++) {
 
-                Dims.push(data[i][dimension]);
+                    Dims.push(data[i][dimension]);
 
-            }
-            for (var i = 0; i < data.length; i++) {
-
-                Mes.push(parseInt(data[i][mesure]));
-
-            }
-
-
-
-
-
-            Highcharts.chart(chartContainer, {
-                chart: {
-                    type: 'bar'
-                },
-                title: {
-                    text: dimension + " par " + mesure
-                },
-                subtitle: {
-                    text: ''
-                },
-                xAxis: {
-                    categories: Dims,
-                    title: {
-                        text: null
-                    }
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: mesure,
-                        align: 'high'
-                    },
-                    labels: {
-                        overflow: 'justify'
-                    }
-                },
-                tooltip: {
-                    valueSuffix: ''
-                },
-                plotOptions: {
-                    bar: {
-                        dataLabels: {
-                            enabled: true
-                        }
-                    }
-                },
-                legend: {
-                    layout: 'vertical',
-                    align: 'right',
-                    verticalAlign: 'top',
-                    x: -40,
-                    y: 80,
-                    floating: true,
-                    borderWidth: 1,
-                    backgroundColor:
-                        Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
-                    shadow: true
-                },
-                credits: {
-                    enabled: false
-                },
-                series: [{
-                    name: mesure,
-                    data: Mes
-                }]
-            });
-
-
-
-        })
-
-
-    }
-
-
-    function BarChartFill2(chartContainer , uniques , uniquesQuery,dataset , dimension , mesure) {
-
-
-
-        var Dims = [];
-        var Mes = [];
-        var dataPoints = [];
-        var base_url = window.location.origin;
-        var urlAPI = base_url+"/dashboard/datasetChart?chart=barChart2&dataset="+dataset+"&dimension="+dimension+"&mesure="+mesure+"&query=" + uniquesQuery
-        //var urlAPI = base_url+"/dashboard/chart?tab="+val1+"&col1="+ val2+"&chart="+ "pieChart"
-        console.log(urlAPI)
-        $.getJSON(urlAPI, function(data)
-        {
-
-            document.getElementById("loader").style.display = "none";
-
-            var seriesData = [];
-           for (var i = 0; i < uniques.length; i++) {
-
-                var val = uniques[i];
-
-                var dataPoints = [];
-
-                for (let j = 0; j < data.length; j++) {
-                    dataPoints.push(parseInt(data[j][val]));
                 }
-                seriesData.push({name : val , data : dataPoints})
+                for (var i = 0; i < data.length; i++) {
+
+                    Mes.push(parseInt(data[i][mesure]));
+
+                }
 
 
-            }
-
-
-
-
-            for (var i = 0; i < data.length; i++) {
-
-                Dims.push(data[i][dimension]);
-
-            }
-
-            console.log("dataset seruiess ");
-            console.log(seriesData);
-            console.log("dataset dimensions");
-            console.log(Dims);
-
-
-            Highcharts.chart(chartContainer, {
-                chart: {
-                    type: 'bar'
-                },
-                title: {
-                    text: mesure +  " par " + dimension
-                },
-                subtitle: {
-                    text: ''
-                },
-                xAxis: {
-                    categories: Dims,
-                    title: {
-                        text: null
-                    }
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: mesure,
-                        align: 'high'
+                Highcharts.chart(chartContainer, {
+                    chart: {
+                        type: 'bar'
                     },
-                    labels: {
-                        overflow: 'justify'
-                    }
-                },
-                tooltip: {
-                    valueSuffix: ''
-                },
-                plotOptions: {
-                    bar: {
-                        dataLabels: {
-                            enabled: true
+                    title: {
+                        text: dimension + " par " + mesure
+                    },
+                    subtitle: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: Dims,
+                        title: {
+                            text: null
                         }
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: mesure,
+                            align: 'high'
+                        },
+                        labels: {
+                            overflow: 'justify'
+                        }
+                    },
+                    tooltip: {
+                        valueSuffix: ''
+                    },
+                    plotOptions: {
+                        bar: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        }
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'top',
+                        x: -40,
+                        y: 80,
+                        floating: true,
+                        borderWidth: 1,
+                        backgroundColor:
+                            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+                        shadow: true
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        name: mesure,
+                        data: Mes
+                    }]
+                });
+
+
+            })
+
+
+        }
+
+
+        function BarChartFill2(chartContainer, uniques, uniquesQuery, dataset, dimension, mesure) {
+
+
+            var Dims = [];
+            var Mes = [];
+            var dataPoints = [];
+            var base_url = window.location.origin;
+            var urlAPI = base_url + "/dashboard/datasetChart?chart=barChart2&dataset=" + dataset + "&dimension=" + dimension + "&mesure=" + mesure + "&query=" + uniquesQuery
+            //var urlAPI = base_url+"/dashboard/chart?tab="+val1+"&col1="+ val2+"&chart="+ "pieChart"
+            console.log(urlAPI)
+            $.getJSON(urlAPI, function (data) {
+
+                document.getElementById("loader").style.display = "none";
+
+                var seriesData = [];
+                for (var i = 0; i < uniques.length; i++) {
+
+                    var val = uniques[i];
+
+                    var dataPoints = [];
+
+                    for (let j = 0; j < data.length; j++) {
+                        dataPoints.push(parseInt(data[j][val]));
                     }
-                },
-                legend: {
-                    layout: 'vertical',
-                    align: 'right',
-                    verticalAlign: 'top',
-                    x: -40,
-                    y: 80,
-                    floating: true,
-                    borderWidth: 1,
-                    backgroundColor:
-                        Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
-                    shadow: true
-                },
-                credits: {
-                    enabled: false
-                },
-                series: seriesData
-            });
+                    seriesData.push({name: val, data: dataPoints})
 
 
-
-        })
-
-
-    }
+                }
 
 
+                for (var i = 0; i < data.length; i++) {
+
+                    Dims.push(data[i][dimension]);
+
+                }
+
+                console.log("dataset seruiess ");
+                console.log(seriesData);
+                console.log("dataset dimensions");
+                console.log(Dims);
 
 
+                Highcharts.chart(chartContainer, {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: mesure + " par " + dimension
+                    },
+                    subtitle: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: Dims,
+                        title: {
+                            text: null
+                        }
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: mesure,
+                            align: 'high'
+                        },
+                        labels: {
+                            overflow: 'justify'
+                        }
+                    },
+                    tooltip: {
+                        valueSuffix: ''
+                    },
+                    plotOptions: {
+                        bar: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        }
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'top',
+                        x: -40,
+                        y: 80,
+                        floating: true,
+                        borderWidth: 1,
+                        backgroundColor:
+                            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+                        shadow: true
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: seriesData
+                });
 
 
-    function PieChartFill(chartContainer , dataset , dimension , mesure){
-        var val1 = tab ;
-        var val2 = col1;
-        var dataPoints = [];
-        var chart = new CanvasJS.Chart(chartContainer ,
-            {
-                theme: "light2",
-                title:{
-                    text: "Pourcentages de " + dimension
-                },
-                data: [
-                    {
-                        type: "pie",
-                        showInLegend: true,
-                        toolTipContent: "{y}  {indexLabel} - #percent % ",
-                        yValueFormatString: "#",
-                        legendText: "{indexLabel}",
-                        dataPoints:  dataPoints,
-                    }
-                ]
-            });
-
-        var base_url = window.location.origin;
-        var urlAPI = base_url+"/dashboard/datasetChart?chart=pieChart&dataset="+dataset+"&dimension="+dimension+"&mesure=null"
-        $.getJSON(urlAPI, function(data)
-        {
-            var data_length = data.length;
-            for (var i = 0; i < data_length; i++) {
-                dataPoints.push({indexLabel: data[i][dimension], y: parseInt(data[i]["cnt"])});
-            }
-
-            document.getElementById("loader").style.display = "none";
-        chart.render();
-    })
-    }
-    function LineChartFill(chartContainer , dataset , dimension , mesure){
-   /*     var val1 = $('#tabList').find(":selected").text()
-        var val2 = $('#col1List').find(":selected").text()
-        var val3 = $('#col2List').find(":selected").text() */
-        val1 = tab;
-        val2 = col1;
-        val3 = col2;
-        var dataPoints = [];
-
-        var chart = new CanvasJS.Chart(chartContainer,
-            {
-
-                title:{
-                    text: dimension + " par "+ mesure
-                },
-                data: [
-                    {
-                        type: "line",
-
-                        dataPoints: dataPoints
-    }
-    ]
-    });
-
-        var base_url = window.location.origin;
-        var urlAPI = base_url+"/dashboard/datasetChart?chart=lineChart&dataset="+dataset+"&dimension="+dimension+"&mesure="+mesure+""  ;
-        $.getJSON(urlAPI, function(data) {
-            var data_length = data.length;
-            for (var i = 0; i < data_length; i++) {
-
-              /*  dataPoints.push({label: new Date(parseInt($year), parseInt($month) - 1, parseInt($day)), y: parseInt(data[i][val2])});*/
-                dataPoints.push({label: data[i][dimension], y: parseInt(data[i][mesure])});
+            })
 
 
-            }
-            document.getElementById("loader").style.display = "none";
-            chart.render();
-        })
-
-    }
+        }
 
 
-</script>
+        function PieChartFill(chartContainer, dataset, dimension, mesure) {
+            var val1 = tab;
+            var val2 = col1;
+            var dataPoints = [];
+            var chart = new CanvasJS.Chart(chartContainer,
+                {
+                    theme: "light2",
+                    title: {
+                        text: "Pourcentages de " + dimension
+                    },
+                    data: [
+                        {
+                            type: "pie",
+                            showInLegend: true,
+                            toolTipContent: "{y}  {indexLabel} - #percent % ",
+                            yValueFormatString: "#",
+                            legendText: "{indexLabel}",
+                            dataPoints: dataPoints,
+                        }
+                    ]
+                });
+
+            var base_url = window.location.origin;
+            var urlAPI = base_url + "/dashboard/datasetChart?chart=pieChart&dataset=" + dataset + "&dimension=" + dimension + "&mesure=null"
+            $.getJSON(urlAPI, function (data) {
+                var data_length = data.length;
+                for (var i = 0; i < data_length; i++) {
+                    dataPoints.push({indexLabel: data[i][dimension], y: parseInt(data[i]["cnt"])});
+                }
+
+                document.getElementById("loader").style.display = "none";
+                chart.render();
+            })
+        }
+
+        function LineChartFill(chartContainer, dataset, dimension, mesure) {
+            /*     var val1 = $('#tabList').find(":selected").text()
+                 var val2 = $('#col1List').find(":selected").text()
+                 var val3 = $('#col2List').find(":selected").text() */
+            val1 = tab;
+            val2 = col1;
+            val3 = col2;
+            var dataPoints = [];
+
+            var chart = new CanvasJS.Chart(chartContainer,
+                {
+
+                    title: {
+                        text: dimension + " par " + mesure
+                    },
+                    data: [
+                        {
+                            type: "line",
+
+                            dataPoints: dataPoints
+                        }
+                    ]
+                });
+
+            var base_url = window.location.origin;
+            var urlAPI = base_url + "/dashboard/datasetChart?chart=lineChart&dataset=" + dataset + "&dimension=" + dimension + "&mesure=" + mesure + "";
+            $.getJSON(urlAPI, function (data) {
+                var data_length = data.length;
+                for (var i = 0; i < data_length; i++) {
+
+                    /*  dataPoints.push({label: new Date(parseInt($year), parseInt($month) - 1, parseInt($day)), y: parseInt(data[i][val2])});*/
+                    dataPoints.push({label: data[i][dimension], y: parseInt(data[i][mesure])});
+
+
+                }
+                document.getElementById("loader").style.display = "none";
+                chart.render();
+            })
+
+        }
+
+
+    </script>
+
     <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 {% endblock %}
